@@ -7,14 +7,12 @@
   <style>
     body {
       margin: 0;
-      padding: 0;
-      height: 100vh;
+      padding: 20px;
       background-color: #007BFF;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
       font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
     h1 {
@@ -23,84 +21,56 @@
       font-size: 2em;
     }
 
+    .button-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      max-width: 1000px;
+    }
+
     .btn {
-      background-color: #007BFF;
-      color: white;
-      border: 2px solid white;
       padding: 20px 40px;
-      margin: 10px;
-      font-size: 1.2em;
+      font-size: 1.1em;
       font-weight: bold;
       border-radius: 12px;
       cursor: pointer;
+      border: 2px solid white;
+      min-width: 220px;
       transition: all 0.3s ease;
     }
 
+    .azul { background-color: #007BFF; color: white; }
+    .celeste { background-color: #00cfff; color: black; }
+    .verde { background-color: #4CAF50; color: black; }
+    .rojo { background-color: #f44336; color: black; }
+    .verdeagua { background-color: #7FFFD4; color: black; }
+    .rosado { background-color: #FFB6C1; color: black; }
+
     .btn:hover {
-      background-color: #0056b3;
-    }
-
-    .popup {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: white;
-      width: 80%;
-      height: 80%;
-      border-radius: 12px;
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-      z-index: 1000;
-      display: none;
-      flex-direction: column;
-    }
-
-    .popup iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-      border-radius: 12px;
-    }
-
-    .popup-close {
-      position: absolute;
-      top: 10px;
-      right: 20px;
-      background-color: #007BFF;
-      color: white;
-      border: none;
-      padding: 10px 15px;
-      border-radius: 8px;
-      font-weight: bold;
-      cursor: pointer;
+      opacity: 0.9;
     }
   </style>
   <script>
-    function mostrarPopup(url) {
-      const popup = document.getElementById('popup');
-      const iframe = document.getElementById('popup-iframe');
-      iframe.src = url;
-      popup.style.display = 'flex';
-    }
-
-    function cerrarPopup() {
-      const popup = document.getElementById('popup');
-      const iframe = document.getElementById('popup-iframe');
-      iframe.src = '';
-      popup.style.display = 'none';
+    function abrirVentanaEmergente(url) {
+      window.open(url, 'popupWindow', 'width=900,height=700,resizable=yes,scrollbars=yes');
     }
   </script>
 </head>
 <body>
   <h1>inicio.turnosdefarmacias.info</h1>
-  <button class="btn" onclick="mostrarPopup('https://script.google.com/macros/s/AKfycbxLOXkGX-UoZA38KEGFzbjOASybp_YoOxlGYhDZyZWtzNKuuVZZRDPUVzuFewaz9-mCjw/exec')">GENÉRICOS</button>
-  <button class="btn" onclick="mostrarPopup('https://panales.turnosdefarmacias.info/')">PAÑALERA</button>
-  <button class="btn" onclick="mostrarPopup('https://www.turnosdefarmacias.info/')">TURNOS</button>
 
-  <div class="popup" id="popup">
-    <button class="popup-close" onclick="cerrarPopup()">CERRAR</button>
-    <iframe id="popup-iframe"></iframe>
+  <div class="button-grid">
+    <button class="btn celeste" onclick="abrirVentanaEmergente('https://www.mercadopago.com.ar/collections#from-section=menu')">MERCADO PAGO</button>
+    <button class="btn azul" onclick="abrirVentanaEmergente('https://script.google.com/macros/s/AKfycbxLOXkGX-UoZA38KEGFzbjOASybp_YoOxlGYhDZyZWtzNKuuVZZRDPUVzuFewaz9-mCjw/exec')">GENÉRICOS</button>
+    <button class="btn azul" onclick="abrirVentanaEmergente('https://panales.turnosdefarmacias.info/')">PAÑALERA</button>
+    <button class="btn verde" onclick="abrirVentanaEmergente('https://www.colfarmaonline.org.ar/')">COLEGIO</button>
+    <button class="btn rojo" onclick="abrirVentanaEmergente('http://ctacte.cofasa.com.ar/Account/LogOn?ReturnUrl=%2fSystem%2fe500%3faspxerrorpath%3d%2fAccount%2fLogOn&aspxerrorpath=/Account/LogOn')">PLATAFORMA</button>
+    <button class="btn verdeagua" onclick="abrirVentanaEmergente('https://www.misvalidaciones.com.ar/')">IOSFA RECETAS</button>
+    <button class="btn verdeagua" onclick="abrirVentanaEmergente('https://validador.iosfa.gob.ar/ValidadorSUA1')">IOSFA CONSULTA DE AFILIADO</button>
+    <button class="btn rosado" onclick="abrirVentanaEmergente('http://sistemasl.ioma.gba.gov.ar/sistemas/meppes_farmacias/index.php')">MEPPES</button>
+    <button class="btn azul" onclick="abrirVentanaEmergente('https://www.turnosdefarmacias.info/')">TURNOS</button>
   </div>
+
 </body>
 </html>
-
