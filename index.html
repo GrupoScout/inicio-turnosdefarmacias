@@ -39,18 +39,68 @@
     .btn:hover {
       background-color: #0056b3;
     }
+
+    .popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      width: 80%;
+      height: 80%;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      display: none;
+      flex-direction: column;
+    }
+
+    .popup iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      border-radius: 12px;
+    }
+
+    .popup-close {
+      position: absolute;
+      top: 10px;
+      right: 20px;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+    }
   </style>
+  <script>
+    function mostrarPopup(url) {
+      const popup = document.getElementById('popup');
+      const iframe = document.getElementById('popup-iframe');
+      iframe.src = url;
+      popup.style.display = 'flex';
+    }
+
+    function cerrarPopup() {
+      const popup = document.getElementById('popup');
+      const iframe = document.getElementById('popup-iframe');
+      iframe.src = '';
+      popup.style.display = 'none';
+    }
+  </script>
 </head>
 <body>
   <h1>inicio.turnosdefarmacias.info</h1>
-  <a href="https://script.google.com/macros/s/AKfycbxLOXkGX-UoZA38KEGFzbjOASybp_YoOxlGYhDZyZWtzNKuuVZZRDPUVzuFewaz9-mCjw/exec">
-    <button class="btn">GENÉRICOS</button>
-  </a>
-  <a href="https://panales.turnosdefarmacias.info/">
-    <button class="btn">PAÑALERA</button>
-  </a>
-  <a href="https://www.turnosdefarmacias.info/">
-    <button class="btn">TURNOS</button>
-  </a>
+  <button class="btn" onclick="mostrarPopup('https://script.google.com/macros/s/AKfycbxLOXkGX-UoZA38KEGFzbjOASybp_YoOxlGYhDZyZWtzNKuuVZZRDPUVzuFewaz9-mCjw/exec')">GENÉRICOS</button>
+  <button class="btn" onclick="mostrarPopup('https://panales.turnosdefarmacias.info/')">PAÑALERA</button>
+  <button class="btn" onclick="mostrarPopup('https://www.turnosdefarmacias.info/')">TURNOS</button>
+
+  <div class="popup" id="popup">
+    <button class="popup-close" onclick="cerrarPopup()">CERRAR</button>
+    <iframe id="popup-iframe"></iframe>
+  </div>
 </body>
 </html>
+
