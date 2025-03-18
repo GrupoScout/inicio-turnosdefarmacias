@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FARMACIA PINTAR</title>
+  <title>Inicio - turnosdefarmacias.info</title>
   <style>
     body {
       margin: 0;
@@ -53,12 +53,12 @@
   </style>
   <script>
     function abrirVentanaEmergente(url) {
-      window.open(url, 'popupWindow', 'width=900,height=700,resizable=yes,scrollbars=yes');
+      window.open(`ventana.html?url=${encodeURIComponent(url)}`, '_blank', 'width=900,height=700,resizable=yes,scrollbars=yes');
     }
   </script>
 </head>
 <body>
-  <h1>Farmacia Pintar</h1>
+  <h1>inicio.turnosdefarmacias.info</h1>
 
   <div class="button-grid">
     <button class="btn celeste" onclick="abrirVentanaEmergente('https://www.mercadopago.com.ar/collections#from-section=menu')">MERCADO PAGO</button>
