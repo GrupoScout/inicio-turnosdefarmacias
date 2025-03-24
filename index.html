@@ -34,9 +34,7 @@
       font-size: 1.1em;
       font-weight: bold;
       border-radius: 12px;
-      text-decoration: none;
-      display: inline-block;
-      text-align: center;
+      cursor: pointer;
       border: 2px solid white;
       min-width: 220px;
       transition: all 0.3s ease;
@@ -53,21 +51,25 @@
       opacity: 0.9;
     }
   </style>
+  <script>
+    function abrirNuevaVentana(url) {
+      window.open(url, '_blank', 'width=1000,height=700,top=100,left=100,resizable=yes,scrollbars=yes');
+    }
+  </script>
 </head>
 <body>
   <h1>inicio.turnosdefarmacias.info</h1>
 
   <div class="button-grid">
-    <a class="btn celeste" href="https://www.mercadopago.com.ar/collections#from-section=menu">MERCADO PAGO</a>
-    <a class="btn azul" href="https://script.google.com/macros/s/AKfycbxLOXkGX-UoZA38KEGFzbjOASybp_YoOxlGYhDZyZWtzNKuuVZZRDPUVzuFewaz9-mCjw/exec">GENÉRICOS</a>
-    <a class="btn azul" href="https://panales.turnosdefarmacias.info/">PAÑALERA</a>
-    <a class="btn verde" href="https://www.colfarmaonline.org.ar">COLEGIO</a>
-    <a class="btn rojo" href="http://ctacte.cofasa.com.ar">PLATAFORMA</a>
-    <a class="btn verdeagua" href="https://www.misvalidaciones.com.ar/">IOSFA RECETAS</a>
-    <a class="btn verdeagua" href="https://validador.iosfa.gob.ar/ValidadorSUA1">IOSFA CONSULTA DE AFILIADO</a>
-    <a class="btn rosado" href="http://sistemasl.ioma.gba.gov.ar/sistemas/meppes_farmacias/index.php">MEPPES</a>
-    <a class="btn azul" href="https://www.turnosdefarmacias.info/">TURNOS</a>
+    <button class="btn celeste" onclick="abrirNuevaVentana('https://www.mercadopago.com.ar/collections#from-section=menu')">MERCADO PAGO</button>
+    <button class="btn azul" onclick="abrirNuevaVentana('https://script.google.com/macros/s/AKfycbxLOXkGX-UoZA38KEGFzbjOASybp_YoOxlGYhDZyZWtzNKuuVZZRDPUVzuFewaz9-mCjw/exec')">GENÉRICOS</button>
+    <button class="btn azul" onclick="abrirNuevaVentana('https://panales.turnosdefarmacias.info/')">PAÑALERA</button>
+    <button class="btn verde" onclick="abrirNuevaVentana('https://www.colfarmaonline.org.ar')">COLEGIO</button>
+    <button class="btn rojo" onclick="abrirNuevaVentana('http://ctacte.cofasa.com.ar')">PLATAFORMA</button>
+    <button class="btn verdeagua" onclick="abrirNuevaVentana('https://www.misvalidaciones.com.ar/')">IOSFA RECETAS</button>
+    <button class="btn verdeagua" onclick="abrirNuevaVentana('https://validador.iosfa.gob.ar/ValidadorSUA1')">IOSFA CONSULTA DE AFILIADO</button>
+    <button class="btn rosado" onclick="abrirNuevaVentana('http://sistemasl.ioma.gba.gov.ar/sistemas/meppes_farmacias/index.php')">MEPPES</button>
+    <button class="btn azul" onclick="abrirNuevaVentana('https://www.turnosdefarmacias.info/')">TURNOS</button>
   </div>
-
 </body>
 </html>
