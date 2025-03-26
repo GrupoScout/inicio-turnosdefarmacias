@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Inicio - turnosdefarmacias.info</title>
+  <title>FARMACIA PINTAR INICIO</title>
   <style>
     body {
       margin: 0;
@@ -59,6 +59,11 @@
     .btn:hover {
       opacity: 0.9;
     }
+
+    .ticket-separador {
+      border-top: 2px dashed black;
+      margin: 20px 0;
+    }
   </style>
   <script>
     const ventanasAbiertas = {};
@@ -75,21 +80,23 @@
       }
     }
 
+    let ultimoIdMostrado = null;
+
     async function revisarPago() {
       try {
-        const response = await fetch("https://farmacia-ticket-server.pedro225.repl.co/ultimo-pago");
+        const response = await fetch("https://farmacia-ticket-server--pedro225.repl.co/ultimo-pago");
         const data = await response.json();
 
-        if (data && data.id && !window.__ticketMostrado) {
-          window.__ticketMostrado = true;
+        if (data && data.id && data.id !== ultimoIdMostrado) {
+          ultimoIdMostrado = data.id;
 
-          const ticketContent = `
-            <div style="width:80mm; border: 2px solid black; padding: 12px; font-family: Arial; font-size: 13px;">
+          const ticketBase = (tipo) => `
+            <div style="width:80mm; padding: 12px; font-family: Arial; font-size: 13px;">
               <div style="border: 2px solid black; padding: 6px; text-align: center; margin-bottom: 10px;">
                 <b style="font-size: 18px;">FARMACIA PINTAR</b><br>
                 SAN MIGUEL<br>AV REMIGIO LOPEZ 2393<br>
                 TEL: 44555502 - WHATSAPP: 1153183466<br>
-                <b>COMPROBANTE NO FISCAL</b><br>
+                <b>COMPROBANTE NO FISCAL - ${tipo}</b><br>
                 FECHA: ${data.fecha} - HORA: ${data.hora}<br>
                 <b>TURNOS: www.turnosdefarmacias.info</b>
               </div>
@@ -104,17 +111,35 @@
                 <b>Código de identificación:</b><br>
                 ${data.codigo}
               </div>
+              <div style="page-break-after: always;"></div>
             </div>`;
 
-          const ventana = window.open("", "_blank", "width=600,height=700");
-          ventana.document.write(`<html><body onload="window.print()">${ticketContent}</body></html>`);
+          const contenidoTicket = `
+            <html>
+              <head>
+                <style>
+                  @media print {
+                    body { margin: 0; padding: 0; }
+                  }
+                </style>
+              </head>
+              <body onload="window.print(); setTimeout(() => window.close(), 500);">
+                ${ticketBase("COMPRADOR")}
+                ${ticketBase("VENDEDOR")}
+              </body>
+            </html>`;
+
+          const ventana = window.open("", "_blank", "width=600,height=800");
+          ventana.document.write(contenidoTicket);
         }
       } catch (e) {
         console.error("Error al revisar pago:", e);
+      } finally {
+        setTimeout(revisarPago, 10000);
       }
     }
 
-    setInterval(revisarPago, 10000);
+    revisarPago();
   </script>
 </head>
 <body>
@@ -136,4 +161,3 @@
   </div>
 </body>
 </html>
-
