@@ -75,11 +75,22 @@
       color: white;
       font-weight: bold;
       font-size: 18px;
-      padding: 30px;
+      padding: 40px;
       border-radius: 12px;
       text-align: center;
       width: 90%;
-      max-width: 400px;
+      max-width: 500px;
+      position: relative;
+    }
+
+    #popup-box input {
+      font-size: 16px;
+      margin-top: 10px;
+      padding: 8px;
+      width: 80%;
+      border-radius: 6px;
+      border: none;
+      text-align: center;
     }
 
     #popup-box button {
@@ -94,91 +105,111 @@
 
     #popup-box .yes { background-color: white; color: black; }
     #popup-box .no { background-color: black; color: white; }
+
+    #popup-box .close-btn {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      font-size: 22px;
+      cursor: pointer;
+    }
+
+    #volver-btn {
+      display: none;
+      margin-top: 30px;
+    }
   </style>
   <script>
-    const ventanasAbiertas = {};
+    let ventanaQR = null;
+    let ultimaTecla = 0;
+    let temporizadorPago = null;
 
-    function abrirUnicaVentana(nombreVentana, url) {
-      if (!ventanasAbiertas[nombreVentana] || ventanasAbiertas[nombreVentana].closed) {
-        ventanasAbiertas[nombreVentana] = window.open(
-          url,
-          nombreVentana,
-          'width=1000,height=700,top=100,left=100,resizable=yes,scrollbars=yes'
-        );
-      } else {
-        ventanasAbiertas[nombreVentana].focus();
-      }
+    const abrirVentana = () => {
+      ventanaQR = window.open("https://www.mercadopago.com.ar/collections#from-section=menu", "ventanaQR", "width=1000,height=700");
     }
 
-    async function revisarPagoAutomatico() {
-      try {
-       const response = await fetch("https://farmacia-ticket-server.onrender.com/ultimo-pago");
-        const data = await response.json();
-
-        if (data && data.id && data.id !== window.__ultimoTicketMostrado) {
-          window.__ultimoTicketMostrado = data.id;
-          if (navigator.vibrate) navigator.vibrate([300, 100, 300]);
-          document.getElementById("popup-overlay").style.display = "flex";
-          window.__ticketData = data;
+    document.addEventListener("keydown", (e) => {
+      const tecla = e.key;
+      if (!isNaN(tecla)) {
+        ultimaTecla = (ultimaTecla * 10 + parseInt(tecla)) % 10000;
+        if (ultimaTecla >= 15 && !temporizadorPago) {
+          temporizadorPago = setTimeout(mostrarPopupPendiente, 10000); // 10 segundos
         }
-      } catch (e) {
-        console.error("Error al revisar pago:", e);
       }
+    });
+
+    function mostrarPopupPendiente() {
+      const box = document.getElementById("popup-box");
+      box.innerHTML = `
+        <span class="close-btn" onclick="cancelarPopup()">×</span>
+        SEGÚN LA RESOLUCIÓN GENERAL AFIP Nº 1415/2003 (HOY ADMINISTRADA POR ARCA), ES OBLIGATORIO OFRECER UN COMPROBANTE (FISCAL O NO FISCAL) TRAS LA OPERACIÓN.<br><br>
+        EL CLIENTE NO ESTÁ OBLIGADO A ACEPTARLO, PERO DEBE CONSULTARSE.<br><br>
+        ¿DESEA GENERAR EL TICKET NO FISCAL?<br><br>
+        <input type="text" id="input-monto" placeholder="Ingrese el monto..."><br>
+        <button class="yes" onclick="generarTicketManual()">HACER TICKET</button>
+        <button class="no" onclick="repetirPopup()">AÚN NO SE HA REALIZADO EL PAGO</button>
+      `;
+      document.getElementById("popup-overlay").style.display = "flex";
     }
 
-    setInterval(revisarPagoAutomatico, 10000);
-
-    async function confirmarImpresionTicket() {
+    function repetirPopup() {
       document.getElementById("popup-overlay").style.display = "none";
-      const data = window.__ticketData;
+      setTimeout(mostrarPopupPendiente, 10000);
+    }
 
-      if (data && data.id) {
-        const ticketBase = (tipo) => `
-          <div style="width:80mm; padding: 12px; font-family: Arial; font-size: 13px;">
-            <div style="border: 2px solid black; padding: 6px; text-align: center; margin-bottom: 10px;">
-              <b style="font-size: 18px;">FARMACIA PINTAR</b><br>
-              SAN MIGUEL<br>AV REMIGIO LOPEZ 2393<br>
-              TEL: 44555502 - WHATSAPP: 1153183466<br>
-              <b>COMPROBANTE NO FISCAL - ${tipo}</b><br>
-              FECHA: ${data.fecha} - HORA: ${data.hora}<br>
-              <b>TURNOS: www.turnosdefarmacias.info</b>
-            </div>
-            <div>
-              <b>Monto pagado:</b> $${data.monto}<br><br>
-              <b>De:</b><br>
-              ${data.cliente || 'Cliente'}<br>
-              Mercado Pago<br><br>
-              <b>Para:</b><br>
-              FARMACIA PINTAR<br>
-              CVU: 0000003100123456789012<br><br>
-              <b>Código de identificación:</b><br>
-              ${data.codigo}
-            </div>
-            <div style="page-break-after: always;"></div>
-          </div>`;
+    function cancelarPopup() {
+      document.getElementById("popup-overlay").style.display = "none";
+      clearTimeout(temporizadorPago);
+      temporizadorPago = null;
+      ultimaTecla = 0;
+    }
 
-        const contenidoTicket = `
-          <html>
-            <head>
-              <style>@media print { body { margin: 0; padding: 0; } }</style>
-            </head>
-            <body onload="window.print(); setTimeout(() => window.close(), 500);">
-              ${ticketBase("COMPRADOR")}
-              ${ticketBase("VENDEDOR")}
-            </body>
-          </html>`;
-
-        const ventana = window.open("", "_blank", "width=600,height=800");
-        ventana.document.write(contenidoTicket);
+    function generarTicketManual() {
+      const monto = document.getElementById("input-monto").value.trim();
+      if (!monto || isNaN(monto)) {
+        alert("Por favor ingrese un monto válido.");
+        return;
       }
+
+      const contenido = `
+        <html>
+          <head><style>@media print { body { margin: 0; padding: 0; font-family: Arial; } }</style></head>
+          <body onload="window.print(); setTimeout(() => window.close(), 500);">
+            <div style="width:80mm; padding: 12px; font-size: 13px; background-color: white;">
+              <div style="border: 2px solid black; padding: 6px; text-align: center; margin-bottom: 10px;">
+                <b style="font-size: 18px;">FARMACIA PINTAR</b><br>
+                SAN MIGUEL<br>AV REMIGIO LOPEZ 2393<br>
+                TEL: 44555502 - WHATSAPP: 1153183466<br>
+                <b>COMPROBANTE NO FISCAL</b><br>
+                FECHA: ${new Date().toLocaleDateString("es-AR")} - HORA: ${new Date().toLocaleTimeString("es-AR")}<br>
+                TURNOS: <b>www.turnosdefarmacias.info</b><br><br>
+                <small>EL TICKET GENERADO ES DE TIPO NO FISCAL, SOLO CON FINES INFORMATIVOS Y COMERCIALES.</small>
+              </div>
+              <div style="border: 2px solid black; padding: 6px; text-align: center;">
+                <b>PAGO SATISFACTORIO POR QR</b><br>
+                <span style="font-size: 18px;">MONTO: <b>$${monto}</b></span>
+              </div>
+              <div style="border: 2px solid black; padding: 6px; text-align: center; font-weight: bold;">
+                ¡GRACIAS POR SU COMPRA!
+              </div>
+            </div>
+          </body>
+        </html>`;
+
+      const ventana = window.open("", "_blank", "width=600,height=800");
+      ventana.document.write(contenido);
+      document.getElementById("popup-overlay").style.display = "none";
+      document.getElementById("volver-btn").style.display = "inline-block";
+      clearTimeout(temporizadorPago);
+      ultimaTecla = 0;
     }
   </script>
 </head>
 <body>
   <h1>FARMACIA PINTAR</h1>
-
   <div class="button-grid">
-    <button class="btn celeste" onclick="abrirUnicaVentana('mercadopago', 'https://www.mercadopago.com.ar/collections#from-section=menu')">MERCADO PAGO</button>
+    <button class="btn celeste" onclick="abrirVentana()">MERCADO PAGO</button>
+    <a href="https://www.mercadopago.com.ar/collections#from-section=menu" id="volver-btn" class="btn celeste">VOLVER A COBRAR CON QR</a>
     <button class="btn azul" onclick="abrirUnicaVentana('genericos', 'https://script.google.com/macros/s/AKfycbxLOXkGX-UoZA38KEGFzbjOASybp_YoOxlGYhDZyZWtzNKuuVZZRDPUVzuFewaz9-mCjw/exec')">GENÉRICOS</button>
     <button class="btn azul" onclick="abrirUnicaVentana('panales', 'https://panales.turnosdefarmacias.info/')">PAÑALERA</button>
     <button class="btn verde" onclick="abrirUnicaVentana('colegio', 'https://www.colfarmaonline.org.ar')">COLEGIO</button>
@@ -191,13 +222,8 @@
     <button class="btn chrome" onclick="abrirUnicaVentana('gmail', 'https://mail.google.com/mail/u/1/')">LEKARNA MAIL</button>
     <button class="btn pride" onclick="abrirUnicaVentana('osde', 'https://extranet.osde.com.ar/OSDEExtranet/jsp/multiempresas/osde/HomePublicaJuridicaV2.jsp')">OSDE VICENTE</button>
   </div>
-
   <div id="popup-overlay">
-    <div id="popup-box">
-      PREGUNTAR AL CLIENTE SI QUIERE QUE SE LE IMPRIMA TICKET, YA QUE ASÍ LO ESTABLECE LA RESOLUCIÓN GENERAL AFIP Nº 1415/2003.<br><br>
-      <button class="yes" onclick="confirmarImpresionTicket()">IMPRIMIR</button>
-      <button class="no" onclick="document.getElementById('popup-overlay').style.display='none'">CANCELAR</button>
-    </div>
+    <div id="popup-box"></div>
   </div>
 </body>
 </html>
