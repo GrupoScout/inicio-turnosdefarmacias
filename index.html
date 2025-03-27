@@ -105,7 +105,6 @@
 
     #popup-box .yes { background-color: white; color: black; }
     #popup-box .no { background-color: black; color: white; }
-
     #popup-box .close-btn {
       position: absolute;
       top: 10px;
@@ -113,19 +112,18 @@
       font-size: 22px;
       cursor: pointer;
     }
-
-    #volver-btn {
-      display: none;
-      margin-top: 30px;
-    }
   </style>
   <script>
     let ventanaQR = null;
     let ultimaTecla = 0;
     let temporizadorPago = null;
+    let cerrarMercadoPagoTimeout = null;
+    let reintentos = 0;
 
     const abrirVentana = () => {
-      ventanaQR = window.open("https://www.mercadopago.com.ar/collections#from-section=menu", "ventanaQR", "width=1000,height=700");
+      ventanaQR = window.open("https://www.mercadopago.com.ar/collections", "ventanaQR", "width=1000,height=700");
+      reintentos = 0;
+      cerrarMercadoPagoTimeout = setTimeout(mostrarPopupCerrarQR, 120000); // 2 minutos
     }
 
     document.addEventListener("keydown", (e) => {
@@ -133,7 +131,7 @@
       if (!isNaN(tecla)) {
         ultimaTecla = (ultimaTecla * 10 + parseInt(tecla)) % 10000;
         if (ultimaTecla >= 15 && !temporizadorPago) {
-          temporizadorPago = setTimeout(mostrarPopupPendiente, 10000); // 10 segundos
+          temporizadorPago = setTimeout(mostrarPopupPendiente, 10000);
         }
       }
     });
@@ -152,9 +150,31 @@
       document.getElementById("popup-overlay").style.display = "flex";
     }
 
-    function repetirPopup() {
+    function mostrarPopupCerrarQR() {
+      const box = document.getElementById("popup-box");
+      reintentos++;
+      box.innerHTML = `
+        <span class="close-btn" onclick="cancelarPopup()">×</span>
+        LA VENTANA DE MERCADO PAGO SE CERRARÁ AUTOMÁTICAMENTE EN 1 MINUTO.<br><br>
+        PARA VOLVER A COBRAR DEBERÁ PRESIONAR "ACEPTAR".<br><br>
+        <button class="yes" onclick="cerrarVentanaQR()">ACEPTAR</button>
+        <button class="no" onclick="reintentarCerrarQR()">AÚN NO</button>
+      `;
+      document.getElementById("popup-overlay").style.display = "flex";
+    }
+
+    function reintentarCerrarQR() {
       document.getElementById("popup-overlay").style.display = "none";
-      setTimeout(mostrarPopupPendiente, 10000);
+      if (reintentos < 5) {
+        cerrarMercadoPagoTimeout = setTimeout(mostrarPopupCerrarQR, 60000); // Otro minuto
+      }
+    }
+
+    function cerrarVentanaQR() {
+      if (ventanaQR && !ventanaQR.closed) {
+        ventanaQR.close();
+      }
+      document.getElementById("popup-overlay").style.display = "none";
     }
 
     function cancelarPopup() {
@@ -199,7 +219,6 @@
       const ventana = window.open("", "_blank", "width=600,height=800");
       ventana.document.write(contenido);
       document.getElementById("popup-overlay").style.display = "none";
-      document.getElementById("volver-btn").style.display = "inline-block";
       clearTimeout(temporizadorPago);
       ultimaTecla = 0;
     }
@@ -209,7 +228,6 @@
   <h1>FARMACIA PINTAR</h1>
   <div class="button-grid">
     <button class="btn celeste" onclick="abrirVentana()">MERCADO PAGO</button>
-    <a href="https://www.mercadopago.com.ar/collections#from-section=menu" id="volver-btn" class="btn celeste">VOLVER A COBRAR CON QR</a>
     <button class="btn azul" onclick="abrirUnicaVentana('genericos', 'https://script.google.com/macros/s/AKfycbxLOXkGX-UoZA38KEGFzbjOASybp_YoOxlGYhDZyZWtzNKuuVZZRDPUVzuFewaz9-mCjw/exec')">GENÉRICOS</button>
     <button class="btn azul" onclick="abrirUnicaVentana('panales', 'https://panales.turnosdefarmacias.info/')">PAÑALERA</button>
     <button class="btn verde" onclick="abrirUnicaVentana('colegio', 'https://www.colfarmaonline.org.ar')">COLEGIO</button>
@@ -227,4 +245,5 @@
   </div>
 </body>
 </html>
+
 
