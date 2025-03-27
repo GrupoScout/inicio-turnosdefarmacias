@@ -112,7 +112,7 @@
 
     async function revisarPagoAutomatico() {
       try {
-        const response = await fetch("https://farmacia-ticket-server--pedro225.repl.co/ultimo-pago");
+       const response = await fetch("https://farmacia-ticket-server.onrender.com/ultimo-pago");
         const data = await response.json();
 
         if (data && data.id && data.id !== window.__ultimoTicketMostrado) {
