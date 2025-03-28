@@ -56,30 +56,28 @@
     }
     #popup-overlay {
       position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background-color: rgba(0, 0, 0, 0.7);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 9999;
-    }
-    #popup-box {
+      top: 0; left: 0; bottom: 0;
+      width: 350px;
       background-color: red;
       color: white;
       font-weight: bold;
       font-size: 18px;
-      padding: 40px;
-      border-radius: 12px;
+      padding: 20px;
+      z-index: 9999;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    #popup-box {
       text-align: center;
-      width: 90%;
-      max-width: 500px;
-      position: relative;
+      width: 100%;
     }
     #popup-box input {
       font-size: 16px;
       margin-top: 10px;
       padding: 8px;
-      width: 80%;
+      width: 90%;
       border-radius: 6px;
       border: none;
       text-align: center;
@@ -98,26 +96,18 @@
   </style>
   <script>
     let ventanaQR = null;
-    let temporizadorCerrarQR = null;
-    let popupCerrarInterval = null;
-    let segundosRestantes = 60;
-    const ventanasAbiertas = {};
+    let tiempoCerrar = null;
+    let intervaloCerrar = null;
+    let segundos = 30;
 
-    function abrirUnicaVentana(nombreVentana, url) {
-      if (!ventanasAbiertas[nombreVentana] || ventanasAbiertas[nombreVentana].closed) {
-        ventanasAbiertas[nombreVentana] = window.open(url, nombreVentana, 'width=1000,height=700');
-        if (nombreVentana === 'mercadopago') {
-          setTimeout(mostrarPopupIngreso, 500);
-          temporizadorCerrarQR = setTimeout(mostrarPopupCerrar, 20000);
-        }
-      } else {
-        ventanasAbiertas[nombreVentana].focus();
-      }
+    function abrirUnicaVentana(nombre, url) {
+      ventanaQR = window.open(url, nombre, 'width=1000,height=700');
+      setTimeout(() => mostrarPopupTicket(), 500);
+      tiempoCerrar = setTimeout(() => iniciarCierreQR(), 20000);
     }
 
-    function mostrarPopupIngreso() {
-      const box = document.getElementById("popup-box");
-      box.innerHTML = `
+    function mostrarPopupTicket() {
+      document.getElementById("popup-box").innerHTML = `
         PONER PRECIO PARA GENERAR TICKET POR PAGO QR<br><br>
         <input id="input-monto" placeholder="Monto..."><br><br>
         <button class="yes" onclick="imprimirTicket()">IMPRIMIR</button>
@@ -153,36 +143,35 @@
       win.document.write(html);
     }
 
-    function mostrarPopupCerrar() {
-      segundosRestantes = 60;
+    function iniciarCierreQR() {
+      segundos = 60;
+      intervaloCerrar = setInterval(actualizarPopupCerrar, 1000);
       actualizarPopupCerrar();
-      popupCerrarInterval = setInterval(actualizarPopupCerrar, 1000);
     }
 
     function actualizarPopupCerrar() {
       const box = document.getElementById("popup-box");
       box.innerHTML = `
-        LA VENTANA DE MERCADO PAGO SE CERRARÁ AUTOMÁTICAMENTE EN ${segundosRestantes} SEGUNDOS.<br><br>
+        LA VENTANA DE MERCADO PAGO SE CERRARÁ AUTOMÁTICAMENTE EN ${segundos} SEGUNDOS.<br><br>
         PARA VOLVER A COBRAR DEBERÁ PRESIONAR "REALIZAR UN NUEVO COBRO".<br><br>
         <button class="yes" onclick="cerrarVentanaQR()">REALIZAR UN NUEVO COBRO</button>
-        <button class="no" onclick="cancelarCierreQR()">AÚN NO</button>
+        <button class="no" onclick="reiniciarTemporizador()">AÚN NO</button>
       `;
       document.getElementById("popup-overlay").style.display = "flex";
-      if (segundosRestantes <= 0) cerrarVentanaQR();
-      segundosRestantes--;
+      if (segundos <= 0) cerrarVentanaQR();
+      segundos--;
     }
 
-    function cancelarCierreQR() {
-      clearInterval(popupCerrarInterval);
-      temporizadorCerrarQR = setTimeout(mostrarPopupCerrar, 10000);
+    function reiniciarTemporizador() {
+      clearInterval(intervaloCerrar);
+      tiempoCerrar = setTimeout(() => iniciarCierreQR(), 30000);
+      mostrarPopupTicket();
     }
 
     function cerrarVentanaQR() {
-      if (ventanasAbiertas['mercadopago'] && !ventanasAbiertas['mercadopago'].closed) {
-        ventanasAbiertas['mercadopago'].close();
-      }
+      if (ventanaQR && !ventanaQR.closed) ventanaQR.close();
       document.getElementById("popup-overlay").style.display = "none";
-      clearInterval(popupCerrarInterval);
+      clearInterval(intervaloCerrar);
     }
   </script>
 </head>
