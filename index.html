@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -14,12 +15,10 @@
       flex-direction: column;
       align-items: center;
     }
-
     h1 {
       color: white;
       margin-bottom: 40px;
     }
-
     .button-grid {
       display: flex;
       flex-wrap: wrap;
@@ -27,7 +26,6 @@
       gap: 20px;
       max-width: 1000px;
     }
-
     .btn {
       padding: 20px 40px;
       font-size: 1.1em;
@@ -40,10 +38,8 @@
       text-align: center;
       text-decoration: none;
     }
-
     .azul { background-color: #007BFF; color: white; }
     .celeste { background-color: #00cfff; color: black; }
-    .lila { background-color: #D8BFD8; color: black; }
     .verde { background-color: #4CAF50; color: black; }
     .rojo { background-color: #f44336; color: black; }
     .verdeagua { background-color: #7FFFD4; color: black; }
@@ -57,7 +53,6 @@
       border: none;
       border-radius: 8px;
     }
-
     .btn:hover { opacity: 0.9; }
 
     #popup-overlay {
@@ -72,54 +67,46 @@
       justify-content: center;
       align-items: center;
       z-index: 9999;
-      color: black;
+      color: white;
       font-weight: bold;
-      font-size: 17px;
+      font-size: 16px;
       padding: 20px;
     }
 
     #popup-overlay input {
-      margin: 10px 0;
       font-size: 16px;
-      padding: 8px;
+      padding: 6px;
       width: 80%;
-      border: none;
-      border-radius: 6px;
+      margin: 12px 0;
       text-align: center;
     }
 
     #popup-overlay button {
-      font-size: 16px;
-      margin: 5px;
-      padding: 10px 20px;
+      font-size: 14px;
+      margin: 6px;
+      padding: 8px 16px;
       border: none;
-      border-radius: 6px;
+      border-radius: 5px;
       cursor: pointer;
     }
 
-    #popup-overlay .imprimir { background: white; color: black; }
-    #popup-overlay .cancelar { background: black; color: white; }
-
-    #barra-progreso {
+    .barra {
       width: 80%;
-      height: 10px;
-      background: #ddd;
-      border-radius: 5px;
-      overflow: hidden;
+      height: 8px;
+      background: black;
       margin-top: 10px;
     }
 
-    #barra-progreso > div {
+    .progreso {
       height: 100%;
-      background: black;
-      width: 0%;
-      transition: width 1s linear;
+      background: white;
+      width: 100%;
     }
   </style>
   <script>
     let ventanaQR = null;
+    let progreso = 100;
     let cerrarTimer = null;
-    let progreso = 0;
 
     function abrirUnicaVentana(nombre, url) {
       const nueva = window.open(url, nombre, "width=1000,height=700");
@@ -128,60 +115,59 @@
         setTimeout(() => {
           if (!ventanaQR.closed) {
             mostrarPopup();
+            iniciarProgreso();
             controlarCierre();
           }
-        }, 500);
+        }, 1000);
       }
     }
 
     function mostrarPopup() {
       document.getElementById("popup-overlay").style.display = "flex";
-      iniciarProgreso();
     }
 
     function iniciarProgreso() {
-      progreso = 0;
-      clearInterval(cerrarTimer);
-      const barra = document.getElementById("progreso");
-      cerrarTimer = setInterval(() => {
-        progreso++;
-        barra.style.width = `${(progreso / 60) * 100}%`;
-        if (progreso >= 60) cerrarTodo();
+      progreso = 100;
+      let barra = document.getElementById("barra-progreso");
+      let barraInt = setInterval(() => {
+        progreso -= 1.67;
+        barra.style.width = progreso + "%";
+        if (progreso <= 0) {
+          clearInterval(barraInt);
+          cerrarTodo();
+        }
       }, 1000);
     }
 
     function cerrarTodo() {
       if (ventanaQR && !ventanaQR.closed) ventanaQR.close();
       document.getElementById("popup-overlay").style.display = "none";
-      clearInterval(cerrarTimer);
     }
 
     function imprimirTicket() {
-      const montoRaw = document.getElementById("input-monto").value.trim().replace(",", ".");
-      if (!montoRaw || isNaN(montoRaw)) {
-        alert("Ingrese un monto válido (solo números y coma para decimales).");
+      const monto = document.getElementById("input-monto").value.trim().replace(",", ".");
+      if (!/^[0-9]+(,[0-9]{1,2})?$/.test(document.getElementById("input-monto").value)) {
+        alert("Ingrese un monto válido (solo números y coma).");
         return;
       }
 
-      const monto = parseFloat(montoRaw).toFixed(2);
-
-      const contenido = `
+      const contenido = \`
         <html>
           <head><style>@media print { body { margin: 0; font-family: Arial; } }</style></head>
-          <body onload="window.print(); setTimeout(() => window.close(), 500)">
+          <body onload="window.print(); setTimeout(() => window.close(), 500);">
             <div style="width:80mm; padding:12px; font-family: Arial; font-size:13px;">
               <div style="border:2px solid black; padding:6px; text-align:center; margin-bottom:10px;">
                 <b style="font-size:18px;">FARMACIA PINTAR</b><br>
                 SAN MIGUEL<br>AV REMIGIO LOPEZ 2393<br>
                 TEL: 44555502 - WHATSAPP: 1153183466<br>
                 <b>COMPROBANTE NO FISCAL</b><br>
-                FECHA: ${new Date().toLocaleDateString("es-AR")} - HORA: ${new Date().toLocaleTimeString("es-AR")}<br>
+                FECHA: \${new Date().toLocaleDateString("es-AR")} - HORA: \${new Date().toLocaleTimeString("es-AR")}<br>
                 TURNOS: www.turnosdefarmacias.info<br><br>
                 <small>EL TICKET GENERADO ES DE TIPO NO FISCAL, SOLO CON FINES INFORMATIVOS Y COMERCIALES.</small>
               </div>
               <div style="border:2px solid black; padding:6px; text-align:center;">
                 <b>PAGO SATISFACTORIO POR QR</b><br>
-                <span style="font-size:18px;">MONTO: $${monto}</span>
+                <span style="font-size:18px;">MONTO: \$\${monto}</span>
               </div>
               <div style="border:2px solid black; padding:6px; text-align:center; font-weight:bold;">
                 ¡GRACIAS POR SU COMPRA!
@@ -189,17 +175,16 @@
             </div>
           </body>
         </html>
-      `;
+      \`;
       const ventana = window.open("", "_blank", "width=600,height=800");
       ventana.document.write(contenido);
-      cerrarTodo();
     }
   </script>
 </head>
 <body>
   <h1>FARMACIA PINTAR</h1>
   <div class="button-grid">
-    <a class="btn lila" href="https://docs.google.com/forms/d/e/1FAIpQLSdUhc3wLRfU9C6QzU5G2EuIo4CeXpHN_tO_REw4JvWJ__hsvA/viewform" target="_blank">RECIBIR COFASAS</a>
+    <a class="btn" style="background-color: #c8a2c8; color: black;" target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLSdUhc3wLRfU9C6QzU5G2EuIo4CeXpHN_tO_REw4JvWJ__hsvA/viewform">RECIBIR COFASAS</a>
     <button class="btn celeste" onclick="abrirUnicaVentana('mercadopago', 'https://www.mercadopago.com.ar/collections')">MERCADO PAGO</button>
     <button class="btn azul" onclick="abrirUnicaVentana('genericos', 'https://script.google.com/macros/s/AKfycbxLOXkGX-UoZA38KEGFzbjOASybp_YoOxlGYhDZyZWtzNKuuVZZRDPUVzuFewaz9-mCjw/exec')">GENÉRICOS</button>
     <button class="btn azul" onclick="abrirUnicaVentana('panales', 'https://panales.turnosdefarmacias.info/')">PAÑALERA</button>
@@ -215,13 +200,11 @@
   </div>
 
   <div id="popup-overlay">
-    <div>
-      <p>SEGÚN LA RESOLUCIÓN GENERAL AFIP Nº 1415/2003 (ADMINISTRADA POR ARCA), SE DEBE OFRECER UN COMPROBANTE (FISCAL O NO FISCAL) TRAS UN PAGO QR.<br><br>EL CLIENTE NO ESTÁ OBLIGADO A ACEPTARLO, PERO USTED DEBE OFRECÉRSELO.</p>
-      <input id="input-monto" placeholder="Ingrese monto..." />
-      <button class="imprimir" onclick="imprimirTicket()">IMPRIMIR TICKET</button>
-      <button class="cancelar" onclick="cerrarTodo()">CANCELAR COBRO ACTUAL</button>
-      <div id="barra-progreso"><div id="progreso"></div></div>
-    </div>
+    <p>SEGÚN LA RESOLUCIÓN GENERAL AFIP Nº 1415/2003 (ADMINISTRADA POR ARCA), SE DEBE OFRECER UN COMPROBANTE (FISCAL O NO FISCAL) TRAS UN PAGO QR.<br><br>EL CLIENTE NO ESTÁ OBLIGADO A ACEPTARLO, PERO USTED DEBE OFRECÉRSELO.</p>
+    <input id="input-monto" placeholder="Ingrese monto" />
+    <button onclick="imprimirTicket()">IMPRIMIR TICKET</button>
+    <button onclick="cerrarTodo()">CANCELAR COBRO ACTUAL</button>
+    <div class="barra"><div class="progreso" id="barra-progreso"></div></div>
   </div>
 </body>
 </html>
