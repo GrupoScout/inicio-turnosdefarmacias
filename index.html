@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Inicio - turnosdefarmacias.info</title>
   <style>
     body {
@@ -17,7 +17,6 @@
     h1 {
       color: white;
       margin-bottom: 40px;
-      font-size: 2em;
     }
     .button-grid {
       display: flex;
@@ -35,10 +34,11 @@
       border: 2px solid white;
       min-width: 220px;
       transition: all 0.3s ease;
+      text-align: center;
+      text-decoration: none;
     }
     .azul { background-color: #007BFF; color: white; }
     .celeste { background-color: #00cfff; color: black; }
-    .lila { background-color: #D8BFD8; color: black; }
     .verde { background-color: #4CAF50; color: black; }
     .rojo { background-color: #f44336; color: black; }
     .verdeagua { background-color: #7FFFD4; color: black; }
@@ -52,69 +52,132 @@
       border: none;
       border-radius: 8px;
     }
-    .btn:hover { opacity: 0.9; }
+
+    .btn:hover {
+      opacity: 0.9;
+    }
+
+    #popup-overlay {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 400px;
+      height: 100vh;
+      background-color: red;
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      color: black;
+      font-weight: bold;
+      font-size: 18px;
+      padding: 20px;
+    }
+
+    #popup-overlay input {
+      margin: 10px 0;
+      font-size: 16px;
+      padding: 8px;
+      width: 80%;
+      border: none;
+      border-radius: 6px;
+      text-align: center;
+    }
+
+    #popup-overlay button {
+      font-size: 16px;
+      margin: 5px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    #popup-overlay .imprimir { background: white; color: black; }
+    #popup-overlay .cancelar { background: black; color: white; }
   </style>
   <script>
     let ventanaQR = null;
+    let popupTimeout = null;
+    let cerrarTimer = null;
+
     function abrirUnicaVentana(nombre, url) {
-      if (nombre === 'mercadopago') {
-        ventanaQR = window.open(url, nombre, 'width=1000,height=700');
-        detectarCierre();
-      } else {
-        window.open(url, nombre, 'width=1000,height=700');
+      const nueva = window.open(url, nombre, "width=1000,height=700");
+      if (url.includes("mercadopago.com.ar/collections")) {
+        ventanaQR = nueva;
+        setTimeout(() => {
+          if (!ventanaQR.closed) {
+            mostrarPopup();
+            controlarCierre();
+          }
+        }, 500);
       }
     }
 
-    function detectarCierre() {
-      const intervalo = setInterval(() => {
-        if (ventanaQR && ventanaQR.closed) {
-          clearInterval(intervalo);
-          if (popup && !popup.closed) popup.close();
+    function mostrarPopup() {
+      document.getElementById("popup-overlay").style.display = "flex";
+      iniciarAutoCerrar();
+    }
+
+    function iniciarAutoCerrar() {
+      let segundos = 60;
+      cerrarTimer = setInterval(() => {
+        segundos--;
+        if (segundos <= 0) {
+          cerrarTodo();
         }
       }, 1000);
     }
 
-    let popup;
-    window.addEventListener('keydown', (e) => {
-      if (!popup || popup.closed) {
-        if (!isNaN(e.key)) {
-          popup = window.open('', '', 'width=400,height=400,left=1200,top=200');
-          popup.document.write(`
-            <html><head><style>
-              body { background: red; color: black; font-family: Arial; font-size: 16px; font-weight: bold; text-align: center; padding: 30px; }
-              input { margin-top: 20px; padding: 10px; font-size: 16px; width: 80%; }
-              button { margin-top: 20px; padding: 10px 20px; font-size: 16px; font-weight: bold; cursor: pointer; }
-            </style></head><body>
-              ARCA (EX AFIP) ESTABLECE QUE DEBE OFRECERSE COMPROBANTE TRAS PAGO CON QR<br>
-              NO ES OBLIGATORIO QUE EL CLIENTE LO ACEPTÉ<br>
-              <input id='monto' placeholder='Ingrese monto' oninput="this.value = this.value.replace(/[^0-9,]/g, '')"/><br>
-              <button onclick='
-                const monto = document.getElementById("monto").value;
-                if (!monto) { alert("Ingrese un monto válido"); return; }
-                const w = window.open("", "_blank", "width=600,height=800");
-                w.document.write(`<html><body onload='window.print(); window.close();'><div style="width:80mm; font-family: Arial; padding: 12px;">
-                  <div style="border:2px solid black; text-align:center; padding:6px;">
-                  <b style="font-size:18px;">FARMACIA PINTAR</b><br>SAN MIGUEL<br>AV REMIGIO LOPEZ 2393<br>
-                  TEL: 44555502 - WHATSAPP: 1153183466<br><b>COMPROBANTE NO FISCAL</b><br>
-                  FECHA: ${new Date().toLocaleDateString("es-AR")} - HORA: ${new Date().toLocaleTimeString("es-AR")}<br>
-                  TURNOS: www.turnosdefarmacias.info<br><br><small>EL TICKET GENERADO ES DE TIPO NO FISCAL, SOLO CON FINES INFORMATIVOS Y COMERCIALES.</small></div>
-                  <div style="border:2px solid black; text-align:center; padding:6px;">
-                  <b>PAGO SATISFACTORIO POR QR</b><br><span style="font-size:18px;">MONTO: $${monto}</span></div>
-                  <div style="border:2px solid black; text-align:center; font-weight:bold; padding:6px;">¡GRACIAS POR SU COMPRA!</div></div></body></html>`);
-                window.close();
-              '>IMPRIMIR</button>
-              <br><br><button onclick='window.close()'>CANCELAR</button>
-            </body></html>
-          `);
-        }
+    function cerrarTodo() {
+      if (ventanaQR && !ventanaQR.closed) ventanaQR.close();
+      document.getElementById("popup-overlay").style.display = "none";
+      clearInterval(cerrarTimer);
+    }
+
+    function imprimirTicket() {
+      const monto = document.getElementById("input-monto").value.replace(",", ".");
+      if (!monto || isNaN(monto)) {
+        alert("Ingrese un monto válido (solo números y coma).");
+        return;
       }
-    });
+
+      const contenido = `
+        <html>
+        <head><style>@media print { body { margin: 0; font-family: Arial; }</style></head>
+        <body onload="window.print(); setTimeout(() => window.close(), 500)">
+          <div style="width:80mm; padding:12px; font-family: Arial; font-size:13px;">
+            <div style="border:2px solid black; padding:6px; text-align:center; margin-bottom:10px;">
+              <b style="font-size:18px;">FARMACIA PINTAR</b><br>
+              SAN MIGUEL<br>AV REMIGIO LOPEZ 2393<br>
+              TEL: 44555502 - WHATSAPP: 1153183466<br>
+              <b>COMPROBANTE NO FISCAL</b><br>
+              FECHA: ${new Date().toLocaleDateString("es-AR")} - HORA: ${new Date().toLocaleTimeString("es-AR")}<br>
+              TURNOS: www.turnosdefarmacias.info<br><br>
+              <small>EL TICKET GENERADO ES DE TIPO NO FISCAL, SOLO CON FINES INFORMATIVOS Y COMERCIALES.</small>
+            </div>
+            <div style="border:2px solid black; padding:6px; text-align:center;">
+              <b>PAGO SATISFACTORIO POR QR</b><br>
+              <span style="font-size:18px;">MONTO: $${monto}</span>
+            </div>
+            <div style="border:2px solid black; padding:6px; text-align:center; font-weight:bold;">
+              ¡GRACIAS POR SU COMPRA!
+            </div>
+          </div>
+        </body>
+        </html>
+      `;
+      const ventana = window.open("", "_blank", "width=600,height=800");
+      ventana.document.write(contenido);
+      cerrarTodo();
+    }
   </script>
 </head>
 <body>
   <h1>FARMACIA PINTAR</h1>
   <div class="button-grid">
-    <button class="btn lila" onclick="abrirUnicaVentana('cofasa', 'https://docs.google.com/forms/d/e/1FAIpQLSdUhc3wLRfU9C6QzU5G2EuIo4CeXpHN_tO_REw4JvWJ__hsvA/viewform')">RECIBIR COFASAS</button>
+    <a class="btn" style="background-color: #c8a2c8; color: black;" target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLSdUhc3wLRfU9C6QzU5G2EuIo4CeXpHN_tO_REw4JvWJ__hsvA/viewform">RECIBIR COFASAS</a>
     <button class="btn celeste" onclick="abrirUnicaVentana('mercadopago', 'https://www.mercadopago.com.ar/collections')">MERCADO PAGO</button>
     <button class="btn azul" onclick="abrirUnicaVentana('genericos', 'https://script.google.com/macros/s/AKfycbxLOXkGX-UoZA38KEGFzbjOASybp_YoOxlGYhDZyZWtzNKuuVZZRDPUVzuFewaz9-mCjw/exec')">GENÉRICOS</button>
     <button class="btn azul" onclick="abrirUnicaVentana('panales', 'https://panales.turnosdefarmacias.info/')">PAÑALERA</button>
@@ -128,5 +191,16 @@
     <button class="btn chrome" onclick="abrirUnicaVentana('gmail', 'https://mail.google.com/mail/u/1/')">LEKARNA MAIL</button>
     <button class="btn pride" onclick="abrirUnicaVentana('osde', 'https://extranet.osde.com.ar/OSDEExtranet/jsp/multiempresas/osde/HomePublicaJuridicaV2.jsp')">OSDE VICENTE</button>
   </div>
+
+  <div id="popup-overlay">
+    <div>
+      <p>Según ARCA (ex AFIP), debe ofrecerse un comprobante, sea fiscal o no. El cliente no está obligado a aceptarlo.</p>
+      <input id="input-monto" placeholder="Ingrese el monto..." />
+      <button class="imprimir" onclick="imprimirTicket()">IMPRIMIR</button>
+      <button class="cancelar" onclick="cerrarTodo()">CANCELAR COBRO ACTUAL</button>
+    </div>
+  </div>
 </body>
+</html>
+
 </html>
