@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FARMACIA PINTAR</title>
+  <title>Inicio - turnosdefarmacias.info</title>
   <style>
     body {
       margin: 0;
@@ -114,124 +114,14 @@
     }
   </style>
   <script>
-    let ventanaQR = null;
-    let ultimaTecla = 0;
-    let temporizadorPopup = null;
-    let cierreTimeout = null;
-    let reintentos = 0;
+    const ventanasAbiertas = {};
 
     function abrirUnicaVentana(nombreVentana, url) {
       if (!ventanasAbiertas[nombreVentana] || ventanasAbiertas[nombreVentana].closed) {
         ventanasAbiertas[nombreVentana] = window.open(url, nombreVentana, 'width=1000,height=700');
-        if (nombreVentana === 'mercadopago') {
-          ventanaQR = ventanasAbiertas[nombreVentana];
-          iniciarDeteccion();
-        }
       } else {
         ventanasAbiertas[nombreVentana].focus();
       }
-    }
-
-    function iniciarDeteccion() {
-      ultimaTecla = 0;
-      temporizadorPopup = null;
-      cierreTimeout = setTimeout(mostrarCierreQR, 120000);
-    }
-
-    document.addEventListener("keydown", (e) => {
-      if (ventanaQR && !ventanaQR.closed) {
-        const tecla = e.key;
-        if (!isNaN(tecla)) {
-          ultimaTecla = (ultimaTecla * 10 + parseInt(tecla)) % 100000;
-          if (ultimaTecla >= 15 && !temporizadorPopup) {
-            temporizadorPopup = setTimeout(mostrarPopup, 10000);
-          }
-        }
-      }
-    });
-
-    function mostrarPopup() {
-      const box = document.getElementById("popup-box");
-      box.innerHTML = `
-        <span class="close-btn" onclick="cancelarPopup()">×</span>
-        SEGÚN LA RESOLUCIÓN GENERAL AFIP Nº 1415/2003 (HOY ADMINISTRADA POR ARCA), ES OBLIGATORIO OFRECER UN COMPROBANTE (FISCAL O NO FISCAL) TRAS LA OPERACIÓN.<br><br>
-        EL CLIENTE NO ESTÁ OBLIGADO A ACEPTARLO, PERO DEBE CONSULTARSE.<br><br>
-        ¿DESEA GENERAR EL TICKET NO FISCAL?<br><br>
-        <input type="text" id="input-monto" placeholder="Ingrese el monto..."><br>
-        <button class="yes" onclick="generarTicketManual()">HACER TICKET</button>
-        <button class="no" onclick="repetirPopup()">AÚN NO SE HA REALIZADO EL PAGO</button>
-      `;
-      document.getElementById("popup-overlay").style.display = "flex";
-    }
-
-    function mostrarCierreQR() {
-      reintentos++;
-      const box = document.getElementById("popup-box");
-      box.innerHTML = `
-        <span class="close-btn" onclick="cancelarPopup()">×</span>
-        LA VENTANA DE MERCADO PAGO SE CERRARÁ AUTOMÁTICAMENTE EN 1 MINUTO.<br><br>
-        PARA VOLVER A COBRAR DEBERÁ PRESIONAR "ACEPTAR".<br><br>
-        <button class="yes" onclick="cerrarVentanaQR()">ACEPTAR</button>
-        <button class="no" onclick="reintentarCerrarQR()">AÚN NO</button>
-      `;
-      document.getElementById("popup-overlay").style.display = "flex";
-    }
-
-    function cerrarVentanaQR() {
-      if (ventanaQR && !ventanaQR.closed) ventanaQR.close();
-      document.getElementById("popup-overlay").style.display = "none";
-    }
-
-    function cancelarPopup() {
-      document.getElementById("popup-overlay").style.display = "none";
-      clearTimeout(temporizadorPopup);
-      clearTimeout(cierreTimeout);
-      ultimaTecla = 0;
-    }
-
-    function repetirPopup() {
-      document.getElementById("popup-overlay").style.display = "none";
-      setTimeout(mostrarPopup, 10000);
-    }
-
-    function generarTicketManual() {
-      const monto = document.getElementById("input-monto").value.trim();
-      if (!monto || isNaN(monto)) {
-        alert("Por favor ingrese un monto válido.");
-        return;
-      }
-
-      const contenido = `
-        <html>
-          <head><style>@media print { body { margin: 0; padding: 0; font-family: Arial; } }</style></head>
-          <body onload="window.print(); setTimeout(() => window.close(), 500);">
-            <div style="width:80mm; padding: 12px; font-size: 13px; background-color: white;">
-              <div style="border: 2px solid black; padding: 6px; text-align: center; margin-bottom: 10px;">
-                <b style="font-size: 18px;">FARMACIA PINTAR</b><br>
-                SAN MIGUEL<br>AV REMIGIO LOPEZ 2393<br>
-                TEL: 44555502 - WHATSAPP: 1153183466<br>
-                <b>COMPROBANTE NO FISCAL</b><br>
-                FECHA: ${new Date().toLocaleDateString("es-AR")} - HORA: ${new Date().toLocaleTimeString("es-AR")}<br>
-                TURNOS: <b>www.turnosdefarmacias.info</b><br><br>
-              </div>
-              <div style="border: 2px solid black; padding: 6px; text-align: center;">
-                <b>PAGO SATISFACTORIO POR QR</b><br>
-                <span style="font-size: 18px;">MONTO: <b>$${monto}</b></span>
-              </div>
-              <div style="border: 2px solid black; padding: 6px; text-align: center; font-weight: bold;">
-                ¡GRACIAS POR SU COMPRA!
-                 <b>FACTURA X</b><br>
-                 <small>TICKET TIPO NO FISCAL.</small>
-              </div>
-            </div>
-          </body>
-        </html>`;
-
-      const ventana = window.open("", "_blank", "width=600,height=800");
-      ventana.document.write(contenido);
-      document.getElementById("popup-overlay").style.display = "none";
-      ultimaTecla = 0;
-      clearTimeout(cierreTimeout);
     }
   </script>
 </head>
