@@ -55,10 +55,10 @@
 
     #popup-overlay {
       position: fixed;
-      top: 0; left: 0; bottom: 0;
+      top: 0; right: 0; bottom: 0;
       width: 300px;
       background-color: red;
-      color: white;
+      color: black;
       font-weight: bold;
       font-size: 18px;
       padding: 20px;
@@ -122,6 +122,8 @@
 
     function mostrarPopupTicket() {
       document.getElementById("popup-box").innerHTML = `
+        SEGÚN LA RESOLUCIÓN GENERAL AFIP Nº 1415/2003 (HOY ADMINISTRADA POR ARCA), SE DEBE ENTREGAR UN COMPROBANTE TRAS UNA OPERACIÓN, AÚN SI NO ES FISCAL.<br><br>
+        EL CLIENTE NO ESTÁ OBLIGADO A ACEPTARLO, PERO SE DEBE CONSULTARLE.<br><br>
         PONER PRECIO PARA GENERAR TICKET POR PAGO QR<br><br>
         <input id="input-monto" placeholder="Monto..." oninput="validarMonto(this)"><br><br>
         <button class="yes" onclick="imprimirTicket()">IMPRIMIR</button>
@@ -148,7 +150,7 @@
               <b>COMPROBANTE NO FISCAL</b><br>
               FECHA: ${new Date().toLocaleDateString("es-AR")} - HORA: ${new Date().toLocaleTimeString("es-AR")}<br>
               TURNOS: www.turnosdefarmacias.info<br>
-              <small>EL TICKET GENERADO ES DE TIPO NO FISCAL, SOLO CON FINES INFORMATIVOS Y COMERCIALES.</small>
+              <small>EL TICKET  TIPO NO FISCAL.</small>
             </div>
             <div style="border: 2px solid black; padding: 6px; text-align: center;">
               <b>PAGO SATISFACTORIO POR QR</b><br>
