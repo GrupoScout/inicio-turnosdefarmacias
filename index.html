@@ -51,13 +51,12 @@
       border: none;
       border-radius: 8px;
     }
-    .btn:hover {
-      opacity: 0.9;
-    }
+    .btn:hover { opacity: 0.9; }
+
     #popup-overlay {
       position: fixed;
       top: 0; left: 0; bottom: 0;
-      width: 350px;
+      width: 300px;
       background-color: red;
       color: white;
       font-weight: bold;
@@ -66,12 +65,12 @@
       z-index: 9999;
       display: none;
       flex-direction: column;
-      align-items: center;
-      justify-content: center;
+      justify-content: flex-start;
+      font-family: Arial, sans-serif;
     }
     #popup-box {
-      text-align: center;
       width: 100%;
+      text-align: center;
     }
     #popup-box input {
       font-size: 16px;
@@ -81,6 +80,7 @@
       border-radius: 6px;
       border: none;
       text-align: center;
+      font-family: Arial;
     }
     #popup-box button {
       font-size: 16px;
@@ -90,37 +90,57 @@
       border: none;
       border-radius: 6px;
       cursor: pointer;
+      font-family: Arial;
     }
     #popup-box .yes { background-color: white; color: black; }
     #popup-box .no { background-color: black; color: white; }
+    .progress-bar {
+      height: 8px;
+      background-color: white;
+      margin-top: 10px;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background-color: black;
+      width: 100%;
+      transition: width 1s linear;
+    }
   </style>
   <script>
     let ventanaQR = null;
     let tiempoCerrar = null;
     let intervaloCerrar = null;
-    let segundos = 30;
+    let segundos = 300;
 
     function abrirUnicaVentana(nombre, url) {
       ventanaQR = window.open(url, nombre, 'width=1000,height=700');
-      setTimeout(() => mostrarPopupTicket(), 500);
-      tiempoCerrar = setTimeout(() => iniciarCierreQR(), 20000);
+      setTimeout(() => mostrarPopupTicket(), 1000);
+      tiempoCerrar = setTimeout(() => iniciarCierreQR(), 300000);
     }
 
     function mostrarPopupTicket() {
       document.getElementById("popup-box").innerHTML = `
         PONER PRECIO PARA GENERAR TICKET POR PAGO QR<br><br>
-        <input id="input-monto" placeholder="Monto..."><br><br>
+        <input id="input-monto" placeholder="Monto..." oninput="validarMonto(this)"><br><br>
         <button class="yes" onclick="imprimirTicket()">IMPRIMIR</button>
       `;
       document.getElementById("popup-overlay").style.display = "flex";
     }
 
+    function validarMonto(input) {
+      input.value = input.value.replace(/[^\d,]/g, '');
+    }
+
     function imprimirTicket() {
       const monto = document.getElementById("input-monto").value;
+      if (!monto || isNaN(monto.replace(',', '.'))) return alert("Ingrese un monto válido");
+
       const html = `
         <html><head><style>@media print { body { margin: 0; padding: 0; font-family: Arial; } }</style></head>
-        <body onload="window.print(); setTimeout(() => window.close(), 500);">
-          <div style="width:80mm; padding: 12px; font-size: 13px; background-color: white;">
+        <body style="font-family: Arial;">
+          <div style="width:80mm; padding: 12px; font-size: 13px; background-color: white; font-family: Arial;">
             <div style="border: 2px solid black; padding: 6px; text-align: center; margin-bottom: 10px;">
               <b style="font-size: 18px;">FARMACIA PINTAR</b><br>
               SAN MIGUEL<br>AV REMIGIO LOPEZ 2393<br>
@@ -137,6 +157,7 @@
             <div style="border: 2px solid black; padding: 6px; text-align: center; font-weight: bold;">
               ¡GRACIAS POR SU COMPRA!
             </div>
+            <script>window.onload = function() { window.print(); setTimeout(() => window.close(), 500); }<\/script>
           </div>
         </body></html>`;
       const win = window.open('', '', 'width=600,height=800');
@@ -145,17 +166,20 @@
 
     function iniciarCierreQR() {
       segundos = 60;
-      intervaloCerrar = setInterval(actualizarPopupCerrar, 1000);
       actualizarPopupCerrar();
+      intervaloCerrar = setInterval(actualizarPopupCerrar, 1000);
     }
 
     function actualizarPopupCerrar() {
+      const progreso = (segundos / 60) * 100;
       const box = document.getElementById("popup-box");
       box.innerHTML = `
         LA VENTANA DE MERCADO PAGO SE CERRARÁ AUTOMÁTICAMENTE EN ${segundos} SEGUNDOS.<br><br>
         PARA VOLVER A COBRAR DEBERÁ PRESIONAR "REALIZAR UN NUEVO COBRO".<br><br>
         <button class="yes" onclick="cerrarVentanaQR()">REALIZAR UN NUEVO COBRO</button>
-        <button class="no" onclick="reiniciarTemporizador()">AÚN NO</button>
+        <button class="no" onclick="reiniciarTemporizador()">AÚN NO</button><br><br>
+        <button class="no" onclick="cancelarTodo()">CANCELAR COBRO ACTUAL</button>
+        <div class="progress-bar"><div class="progress-bar-fill" style="width: ${progreso}%;"></div></div>
       `;
       document.getElementById("popup-overlay").style.display = "flex";
       if (segundos <= 0) cerrarVentanaQR();
@@ -166,6 +190,10 @@
       clearInterval(intervaloCerrar);
       tiempoCerrar = setTimeout(() => iniciarCierreQR(), 30000);
       mostrarPopupTicket();
+    }
+
+    function cancelarTodo() {
+      cerrarVentanaQR();
     }
 
     function cerrarVentanaQR() {
