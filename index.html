@@ -1,156 +1,188 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Farmacia de Turno</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            background-color: #04548c;
-            color: #ffffff;
-            margin: 0;
-            padding: 0;
-        }
-        .container {
-            padding: 20px;
-        }
-        h1 {
-            background-color: #81e1ee;
-            padding: 15px;
-            margin: 0;
-            color: #04548c;
-        }
-        .info {
-            font-size: 1.5em;
-            margin: 20px 0;
-        }
-        .info span {
-            font-weight: bold;
-        }
-        .buttons button {
-            background-color: #67ad7f;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            margin: 10px;
-            font-size: 1.2em;
-            cursor: pointer;
-            border-radius: 5px;
-        }
-        .buttons button:hover {
-            background-color: #338682;
-        }
-        .calendar {
-            display: none;
-            margin-top: 20px;
-            text-align: left;
-            padding: 10px;
-            background: white;
-            color: black;
-            max-width: 400px;
-            margin-left: auto;
-            margin-right: auto;
-            border-radius: 5px;
-        }
-        .footer {
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            font-size: 1.2em;
-            padding: 10px;
-            background-color: #81e1ee;
-            color: #04548c;
-        }
-        .error-btn {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background-color: red;
-            color: white;
-            padding: 5px 10px;
-            text-decoration: none;
-            border-radius: 5px;
-        }
-    </style>
-</head>
-<body>
-    <a href="https://wa.me/farmaciapintar.com" class="error-btn">Reportar un error</a>
-    <h1>Farmacia de Turno</h1>
-    <div class="container">
-        <div class="info" id="farmaciaInfo">
-            FARMACIA DE TURNO: <span id="farmaciaNombre"></span><br>
-            Dirección: <span id="farmaciaDireccion"></span><br>
-            Teléfono: <span id="farmaciaTelefono"></span>
-        </div>
-        <div class="buttons">
-            <button id="llamar">Llamar a la farmacia</button>
-            <button id="verMapa">Ver en el mapa</button>
-            <button id="verCalendario">Ver Calendario</button>
-        </div>
-        <div class="calendar" id="calendario">
-            <h3>Calendario de Turnos</h3>
-            <ul id="listaTurnos"></ul>
-        </div>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Inicio - turnosdefarmacias.info</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      background-color: #007BFF;
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    h1 {
+      color: white;
+      margin-bottom: 40px;
+    }
+    .button-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      max-width: 1000px;
+    }
+    .btn {
+      padding: 20px 40px;
+      font-size: 1.1em;
+      font-weight: bold;
+      border-radius: 12px;
+      cursor: pointer;
+      border: 2px solid white;
+      min-width: 220px;
+      transition: all 0.3s ease;
+      text-align: center;
+      text-decoration: none;
+    }
+    .azul { background-color: #007BFF; color: white; }
+    .celeste { background-color: #00cfff; color: black; }
+    .verde { background-color: #4CAF50; color: black; }
+    .rojo { background-color: #f44336; color: black; }
+    .verdeagua { background-color: #7FFFD4; color: black; }
+    .rosado { background-color: #FFB6C1; color: black; }
+    .azuloscuro { background-color: #102c54; color: white; }
+    .chrome { background-color: #DB4437; color: white; }
+    .pride {
+      background: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet);
+      color: black;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+    }
+    .btn:hover {
+      opacity: 0.9;
+    }
+
+    #ticketPanel {
+      position: fixed;
+      right: 0;
+      top: 0;
+      height: 100%;
+      width: 250px;
+      background: white;
+      box-shadow: -2px 0 10px rgba(0,0,0,0.3);
+      padding: 20px;
+      display: none;
+      flex-direction: column;
+      gap: 15px;
+      z-index: 999;
+    }
+    #ticketPanel h3 {
+      font-size: 18px;
+      margin: 0;
+    }
+    #ticketAmount {
+      padding: 10px;
+      font-size: 20px;
+      text-align: center;
+    }
+    #ticketPanel button {
+      padding: 10px;
+      font-size: 16px;
+      background: #007BFF;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 8px;
+    }
+    #ticket {
+      display: none;
+    }
+    @media print {
+      @page {
+        size: 80mm auto;
+        margin: 0;
+      }
+      body > *:not(#ticket) {
+        display: none;
+      }
+      #ticket {
+        display: block;
+        font-family: monospace;
+        font-size: 13px;
+        width: 240px;
+        margin: 0 auto;
+        text-align: center;
+      }
+      #ticketContent {
+        border: 2px solid black;
+        padding: 10px;
+        white-space: pre-wrap;
+      }
+      #qrImage {
+        width: 120px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+      }
+    }
+  </style>
+  <script>
+    let mercadoPagoVentana = null;
+    let monitor = null;
+
+    function abrirUnicaVentana(nombre, url) {
+      if (nombre === 'mercadopago') {
+        mercadoPagoVentana = window.open(url, nombre, 'width=1000,height=700,resizable=yes,scrollbars=yes');
+        mostrarPanelTicket();
+
+        monitor = setInterval(() => {
+          if (mercadoPagoVentana.closed) {
+            document.getElementById('ticketPanel').style.display = 'none';
+            clearInterval(monitor);
+          }
+        }, 1000);
+      } else {
+        window.open(url, nombre, 'width=1000,height=700,resizable=yes,scrollbars=yes');
+      }
+    }
+
+    function mostrarPanelTicket() {
+      document.getElementById('ticketPanel').style.display = 'flex';
+    }
+
+    function imprimirTicket() {
+  const monto = document.getElementById('ticketAmount').value;
+  const ahora = new Date();
+  const fecha = ahora.toLocaleDateString('es-AR');
+  const hora = ahora.toLocaleTimeString('es-AR');
+  document.getElementById('ticketContent').innerHTML = `
+    <div style="border: 2px solid black; padding: 5px; margin-bottom: 8px;">
+      <strong>FARMACIA PINTAR</strong><br>
+      SAN MIGUEL<br>
+      AV REMIGIO LOPEZ 2393<br>
+      TEL: 44555502 - WHATSAPP: 1153183466<br>
+      <strong>COMPROBANTE NO FISCAL</strong><br>
+      FECHA: ${fecha} - HORA: ${hora}
     </div>
-    <div class="footer">GENTILEZA DE FARMACIA PINTAR | AV. REMIGIO LOPEZ 2393 | TEL 4455-5502 |       30 AÑOS 1994-2024</div>
-    <script>
-        const farmacias = {
-            'MITRE': { direccion: 'Av. Balbín 4247', telefono: '4455-0206', mapa: 'https://maps.google.com?q=Av.+Balbin+4247' },
-            'SARMIENTO': { direccion: 'Av. R. López 3222', telefono: '11-5929-8980', mapa: 'https://maps.google.com?q=Av.+R.+Lopez+3222' },
-            'VAZQUEZ': { direccion: 'Av. Balbín 4702', telefono: '4455-6412', mapa: 'https://maps.google.com?q=Av.+Balbin+4702' },
-            'PINTAR': { direccion: 'Av. Sarmiento 2393', telefono: '4455-5502', mapa: 'https://maps.google.com?q=Av.+Sarmiento+2393' },
-            'CALPE': { direccion: 'Av. Balbín 3554', telefono: '4455-1514', mapa: 'https://maps.google.com?q=Av.+Balbin+3554' }
-        };
-        
-        function obtenerFarmacia(dia, mes) {
-            const farmaciasSemana = ['MITRE', 'SARMIENTO', 'VAZQUEZ', 'PINTAR', 'CALPE'];
-            const farmaciasSabado = ['MITRE', 'CALPE', 'SARMIENTO', 'VAZQUEZ', 'PINTAR'];
-            const farmaciasDomingo = ['VAZQUEZ', 'PINTAR', 'MITRE', 'CALPE', 'SARMIENTO'];
-            
-            let fecha = new Date(new Date().getFullYear(), mes - 1, dia);
-            let diaSemana = fecha.getDay();
-            let semanasTranscurridas = Math.floor((fecha - new Date(new Date().getFullYear(), 1, 1)) / (1000 * 60 * 60 * 24 * 7));
-            
-            if (diaSemana >= 1 && diaSemana <= 5) {
-                return farmaciasSemana[diaSemana - 1];
-            } else if (diaSemana === 6) {
-                return farmaciasSabado[semanasTranscurridas % farmaciasSabado.length];
-            } else if (diaSemana === 0) {
-                return farmaciasDomingo[semanasTranscurridas % farmaciasDomingo.length];
-            }
-            return 'Desconocido';
-        }
-        
-        function mostrarTurnoHoy() {
-            let hoy = new Date();
-            let farmaciaHoy = obtenerFarmacia(hoy.getDate(), hoy.getMonth() + 1);
-            document.getElementById('farmaciaNombre').innerText = farmaciaHoy;
-            document.getElementById('farmaciaDireccion').innerText = farmacias[farmaciaHoy]?.direccion || 'No disponible';
-            document.getElementById('farmaciaTelefono').innerText = farmacias[farmaciaHoy]?.telefono || 'No disponible';
-            document.getElementById('llamar').onclick = () => window.location.href = `tel:${farmacias[farmaciaHoy]?.telefono}`;
-            document.getElementById('verMapa').onclick = () => window.open(farmacias[farmaciaHoy]?.mapa, '_blank');
-        }
-        
-        function generarCalendarioMes() {
-            const listaTurnos = document.getElementById('listaTurnos');
-            listaTurnos.innerHTML = '';
-            let hoy = new Date();
-            let mes = hoy.getMonth() + 1;
-            let diasMes = new Date(hoy.getFullYear(), mes, 0).getDate();
-            for (let dia = 1; dia <= diasMes; dia++) {
-                let farmacia = obtenerFarmacia(dia, mes);
-                const item = document.createElement('li');
-                item.textContent = `${dia}/${mes}: ${farmacia}`;
-                listaTurnos.appendChild(item);
-            }
-            document.getElementById('calendario').style.display = 'block';
-        }
-        
-        document.getElementById('verCalendario').onclick = generarCalendarioMes;
-        
-        document.addEventListener('DOMContentLoaded', mostrarTurnoHoy);
-    </script>
-</body>
-</html>
+
+    <div style="border: 2px solid black; padding: 10px; margin-bottom: 8px; text-align: center;">
+      <div style="font-size: 22px; font-weight: bold;">
+        TOTAL: $${parseFloat(monto).toFixed(2)}
+      </div>
+    </div>
+
+    <div style="border: 2px solid black; padding: 5px;">
+      ------------------------------<br>
+      <strong>GRACIAS POR SU COMPRA</strong>
+    </div>
+  `;
+  window.print();
+}</strong>
+    </div>
+  `;
+  window.print();
+}</strong>
+    </div>
+  `;
+  window.print();
+} - HORA: ${hora}
+PAGO SATISFACTORIO CON QR
+
+IMPORTE: $${monto}
+
+------------------------------
+GRACIAS POR SU COMPRA
+
