@@ -92,6 +92,10 @@
       display: none;
     }
     @media print {
+      @page {
+        size: 80mm auto;
+        margin: 0;
+      }
       body > *:not(#ticket) {
         display: none;
       }
@@ -101,12 +105,17 @@
         font-size: 13px;
         width: 240px;
         margin: 0 auto;
+        text-align: center;
       }
       #ticketContent {
         border: 2px solid black;
         padding: 10px;
         white-space: pre-wrap;
-        text-align: center;
+      }
+      #qrImage {
+        width: 120px;
+        margin-top: 10px;
+        margin-bottom: 10px;
       }
     }
   </style>
@@ -135,56 +144,38 @@
     }
 
     function imprimirTicket() {
-      const monto = document.getElementById('ticketAmount').value;
-      const ahora = new Date();
-      const fecha = ahora.toLocaleDateString('es-AR');
-      const hora = ahora.toLocaleTimeString('es-AR');
-      document.getElementById('ticketContent').innerText = `
-╔══════════════════════════════╗
-FARMACIA PINTAR
-SAN MIGUEL
-AV REMIGIO LOPEZ 2393
-TEL: 44555502 - WHATSAPP: 1153183466
-COMPROBANTE NO FISCAL
-FECHA: ${fecha} - HORA: ${hora}
+  const monto = document.getElementById('ticketAmount').value;
+  const ahora = new Date();
+  const fecha = ahora.toLocaleDateString('es-AR');
+  const hora = ahora.toLocaleTimeString('es-AR');
+  document.getElementById('ticketContent').innerHTML = `
+    <div style="border: 2px solid black; padding: 5px; margin-bottom: 8px;">
+      <strong>FARMACIA PINTAR</strong><br>
+      SAN MIGUEL<br>
+      AV REMIGIO LOPEZ 2393<br>
+      TEL: 44555502 - WHATSAPP: 1153183466<br>
+      <strong>COMPROBANTE NO FISCAL</strong><br>
+      FECHA: ${fecha} - HORA: ${hora}
+    </div>
+
+    <div style="border: 2px solid black; padding: 10px; margin-bottom: 8px; text-align: center;">
+  <div style="font-size: 22px; font-weight: bold;">
+    PAGO CON QR APROBADO<br>
+    MONTO: $${parseFloat(monto).toFixed(2)}
+  </div>
+</div>
+    </div>
+
+    <div style="border: 2px solid black; padding: 5px;">
+      ------------------------------<br>
+      <strong>GRACIAS POR SU COMPRA</strong>
+    </div>
+  `;
+  window.print();
+} - HORA: ${hora}
 PAGO SATISFACTORIO CON QR
-╚══════════════════════════════╝
 
-╔══════════════════════════════╗
 IMPORTE: $${monto}
-╚══════════════════════════════╝
 
+------------------------------
 GRACIAS POR SU COMPRA
-`;
-      window.print();
-    }
-  </script>
-</head>
-<body>
-  <h1>FARMACIA PINTAR</h1>
-  <div class="button-grid">
-    <button class="btn celeste" onclick="abrirUnicaVentana('mercadopago', 'https://www.mercadopago.com.ar/collections')">MERCADO PAGO</button>
-    <button class="btn azul" onclick="abrirUnicaVentana('genericos', 'https://script.google.com/macros/s/AKfycbxLOXkGX-UoZA38KEGFzbjOASybp_YoOxlGYhDZyZWtzNKuuVZZRDPUVzuFewaz9-mCjw/exec')">GENÉRICOS</button>
-    <button class="btn azul" onclick="abrirUnicaVentana('panales', 'https://panales.turnosdefarmacias.info/')">PAÑALERA</button>
-    <button class="btn verde" onclick="abrirUnicaVentana('colegio', 'https://www.colfarmaonline.org.ar')">COLEGIO</button>
-    <button class="btn rojo" onclick="abrirUnicaVentana('plataforma', 'http://ctacte.cofasa.com.ar')">PLATAFORMA</button>
-    <button class="btn verdeagua" onclick="abrirUnicaVentana('iosfa_recetas', 'https://www.misvalidaciones.com.ar/')">IOSFA RECETAS</button>
-    <button class="btn verdeagua" onclick="abrirUnicaVentana('iosfa_afiliado', 'https://validador.iosfa.gob.ar/ValidadorSUA1')">IOSFA CONSULTA DE AFILIADO</button>
-    <button class="btn rosado" onclick="abrirUnicaVentana('meppes', 'http://sistemasl.ioma.gba.gov.ar/sistemas/meppes_farmacias/index.php')">MEPPES</button>
-    <button class="btn azul" onclick="abrirUnicaVentana('turnos', 'https://www.turnosdefarmacias.info/')">TURNOS</button>
-    <button class="btn azuloscuro" onclick="abrirUnicaVentana('farmasun', 'https://app.drogueriafarmasun.com.ar/login')">FARMASUN</button>
-    <button class="btn chrome" onclick="abrirUnicaVentana('gmail', 'https://mail.google.com/mail/u/1/')">LEKARNA MAIL</button>
-    <button class="btn pride" onclick="abrirUnicaVentana('osde', 'https://extranet.osde.com.ar/OSDEExtranet/jsp/multiempresas/osde/HomePublicaJuridicaV2.jsp')">OSDE VICENTE</button>
-  </div>
-
-  <div id="ticketPanel">
-    <h3>HACER TICKET DE MERCADO PAGO</h3>
-    <input type="number" id="ticketAmount" placeholder="Ingrese monto sin puntos ni comas" />
-    <button onclick="imprimirTicket()">Imprimir</button>
-  </div>
-
-  <div id="ticket">
-    <pre id="ticketContent"></pre>
-  </div>
-</body>
-</html>
