@@ -98,15 +98,15 @@
       #ticket {
         display: block;
         font-family: monospace;
-        font-size: 14px;
-        width: auto;
-        padding: 10px;
-      }
-      #ticket pre {
-        border: 1px solid black;
-        padding: 10px;
+        font-size: 13px;
         width: 240px;
+        margin: 0 auto;
+      }
+      #ticketContent {
+        border: 2px solid black;
+        padding: 10px;
         white-space: pre-wrap;
+        text-align: center;
       }
     }
   </style>
@@ -140,6 +140,7 @@
       const fecha = ahora.toLocaleDateString('es-AR');
       const hora = ahora.toLocaleTimeString('es-AR');
       document.getElementById('ticketContent').innerText = `
+╔══════════════════════════════╗
 FARMACIA PINTAR
 SAN MIGUEL
 AV REMIGIO LOPEZ 2393
@@ -147,11 +148,14 @@ TEL: 44555502 - WHATSAPP: 1153183466
 COMPROBANTE NO FISCAL
 FECHA: ${fecha} - HORA: ${hora}
 PAGO SATISFACTORIO CON QR
+╚══════════════════════════════╝
 
+╔══════════════════════════════╗
 IMPORTE: $${monto}
+╚══════════════════════════════╝
 
 GRACIAS POR SU COMPRA
-      `;
+`;
       window.print();
     }
   </script>
