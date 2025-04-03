@@ -57,30 +57,15 @@
     }
   </style>
   <script>
-    let ventanaMP;
-    let ventanaTicket;
-
-    function abrirMercadoPago() {
-      if (!ventanaMP || ventanaMP.closed) {
-        ventanaMP = window.open('https://www.mercadopago.com.ar/collections', 'mercadopago', 'width=1000,height=700,resizable=yes,scrollbars=yes');
-        ventanaTicket = window.open('URL_DEL_TICKET', 'ticket', 'width=400,height=700,left=1000,resizable=yes,scrollbars=yes');
-        
-        let interval = setInterval(() => {
-          if (ventanaMP.closed) {
-            if (ventanaTicket && !ventanaTicket.closed) {
-              ventanaTicket.close();
-            }
-            clearInterval(interval);
-          }
-        }, 500);
-      }
+    function abrirUnicaVentana(nombre, url) {
+      window.open(url, nombre, 'width=1000,height=700,resizable=yes,scrollbars=yes');
     }
   </script>
 </head>
 <body>
   <h1>FARMACIA PINTAR</h1>
   <div class="button-grid">
-    <button class="btn celeste" onclick="abrirMercadoPago()">MERCADO PAGO</button>
+    <button class="btn celeste" onclick="abrirUnicaVentana('mercadopago', 'https://www.mercadopago.com.ar/collections')">MERCADO PAGO</button>
     <button class="btn azul" onclick="abrirUnicaVentana('genericos', 'https://script.google.com/macros/s/AKfycbxLOXkGX-UoZA38KEGFzbjOASybp_YoOxlGYhDZyZWtzNKuuVZZRDPUVzuFewaz9-mCjw/exec')">GENÉRICOS</button>
     <button class="btn azul" onclick="abrirUnicaVentana('panales', 'https://panales.turnosdefarmacias.info/')">PAÑALERA</button>
     <button class="btn verde" onclick="abrirUnicaVentana('colegio', 'https://www.colfarmaonline.org.ar')">COLEGIO</button>
