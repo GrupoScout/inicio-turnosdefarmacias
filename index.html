@@ -1,6 +1,5 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="es">
-
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -63,46 +62,15 @@
             text-decoration: none;
         }
 
-        .celeste {
-            background-color: #00cfff;
-            color: black;
-        }
-
-        .azul {
-            background-color: #007BFF;
-            color: white;
-        }
-
-        .verde {
-            background-color: #4CAF50;
-        }
-
-        .rojo {
-            background-color: #f44336;
-        }
-
-        .verdeagua {
-            background-color: #7FFFD4;
-        }
-
-        .rosado {
-            background-color: #FFB6C1;
-        }
-
-        .azuloscuro {
-            background-color: #102c54;
-            color: white;
-        }
-        .naranja {
-            background-color: #FFA500;
-            color: black;
-        }
-
-        .chrome {
-            background-color: #DB4437;
-            color: white;
-        }
-
+        .celeste { background-color: #00cfff; color: black; }
+        .azul { background-color: #007BFF; color: white; }
+        .verde { background-color: #4CAF50; }
+        .rojo { background-color: #f44336; }
+        .verdeagua { background-color: #7FFFD4; }
+        .rosado { background-color: #FFB6C1; }
+        .azuloscuro { background-color: #102c54; color: white; }
+        .naranja { background-color: #FFA500; color: black; }
+        .chrome { background-color: #DB4437; color: white; }
         .pride {
             background: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet);
             color: black;
@@ -163,10 +131,6 @@
 
         setInterval(actualizarHora, 1000);
 
-        function abrirUnicaVentana(nombre, url) {
-            window.open(url, nombre, 'width=1000,height=700,resizable=yes,scrollbars=yes');
-        }
-
         function validarNumero(input) {
             const valor = input.value.replace(/[^0-9,]/g, '');
             input.value = valor;
@@ -203,7 +167,6 @@
         document.addEventListener('DOMContentLoaded', actualizarHora);
     </script>
 </head>
-
 <body>
     <div class="barra-superior">
         <span id="hora-actual"></span>
@@ -211,40 +174,22 @@
     <div class="content">
         <h1>FARMACIA PINTAR</h1>
         <div class="button-grid">
-            <button class="btn naranja"
-                onclick="abrirUnicaVentana('cofasa', 'https://docs.google.com/forms/d/e/1FAIpQLSdUhc3wLRfU9C6QzU5G2EuIo4CeXpHN_tO_REw4JvWJ__hsvA/viewform')">RECEPCION COFASA</button>
-            <button class="btn yellow"
-                onclick="abrirUnicaVentana('youtube', 'https://www.youtube.com/')">YouTube</button>
-            <button class="btn celeste"
-                onclick="abrirUnicaVentana('mercadopago', 'https://www.mercadopago.com.ar/collections')">MERCADO PAGO</button>
-            <button class="btn azul"
-                onclick="abrirUnicaVentana('genericos', 'https://script.google.com/macros/s/AKfycbxLOXkGX-UoZA38KEGFzbjOASybp_YoOxlGYhDZyZWtzNKuuVZZRDPUVzuFewaz9-mCjw/exec')">GENÉRICOS</button>
-            <button class="btn verde"
-                onclick="abrirUnicaVentana('colegio', 'https://www.colfarmaonline.org.ar')">COLEGIO</button>
-            <button class="btn verde"
-                onclick="abrirUnicaVentana('colegio', 'https://farma.pami.org.ar/solicitud')">PAMI</button>
-            <button class="btn rojo"
-                onclick="abrirUnicaVentana('plataforma', 'http://ctacte.cofasa.com.ar')">PLATAFORMA</button>
-            <button class="btn verdeagua"
-                onclick="abrirUnicaVentana('iosfa_recetas', 'https://www.misvalidaciones.com.ar/')">IOSFA RECETAS</button>
-            <button class="btn verdeagua"
-                onclick="abrirUnicaVentana('iosfa_afiliado', 'https://validador.iosfa.gob.ar/ValidadorSUA1')">IOSFA
-                CONSULTA DE AFILIADO</button>
-            <button class="btn azul"
-                onclick="abrirUnicaVentana('panales', 'https://panales.turnosdefarmacias.info/')">PAÑALERA</button>
-            <button class="btn azul"
-                onclick="abrirUnicaVentana('silfab', 'https://silfab.turnosdefarmacias.info')">SILFAB</button>
-            <button class="btn rosado"
-                onclick="abrirUnicaVentana('meppes', 'http://sistemasl.ioma.gba.gov.ar/sistemas/meppes_farmacias/index.php')">MEPPES</button>
-            <button class="btn azul"
-                onclick="abrirUnicaVentana('turnos', 'https://www.turnosdefarmacias.info/')">TURNOS</button>
-            <button class="btn azuloscuro"
-                onclick="abrirUnicaVentana('farmasun', 'https://app.drogueriafarmasun.com.ar/login')">FARMASUN</button>
-            <button class="btn chrome"
-                onclick="abrirUnicaVentana('gmail', 'https://mail.google.com/mail/u/1/')">LEKARNA MAIL</button>
-            <button class="btn pride"
-                onclick="abrirUnicaVentana('osde', 'https://extranet.osde.com.ar/OSDEExtranet/jsp/multiempresas/osde/HomePublicaJuridicaV2.jsp')">OSDE
-                VICENTE</button>
+            <a class="btn naranja" href="https://docs.google.com/forms/d/e/1FAIpQLSdUhc3wLRfU9C6QzU5G2EuIo4CeXpHN_tO_REw4JvWJ__hsvA/viewform" target="_blank">RECEPCION COFASA</a>
+            <a class="btn yellow" href="https://www.youtube.com/" target="_blank">YouTube</a>
+            <a class="btn celeste" href="https://www.mercadopago.com.ar/collections" target="_blank">MERCADO PAGO</a>
+            <a class="btn azul" href="https://script.google.com/macros/s/AKfycbxLOXkGX-UoZA38KEGFzbjOASybp_YoOxlGYhDZyZWtzNKuuVZZRDPUVzuFewaz9-mCjw/exec" target="_blank">GENÉRICOS</a>
+            <a class="btn verde" href="https://www.colfarmaonline.org.ar" target="_blank">COLEGIO</a>
+            <a class="btn verde" href="https://farma.pami.org.ar/solicitud" target="_blank">PAMI</a>
+            <a class="btn rojo" href="http://ctacte.cofasa.com.ar" target="_blank">PLATAFORMA</a>
+            <a class="btn verdeagua" href="https://www.misvalidaciones.com.ar/" target="_blank">IOSFA RECETAS</a>
+            <a class="btn verdeagua" href="https://validador.iosfa.gob.ar/ValidadorSUA1" target="_blank">IOSFA CONSULTA DE AFILIADO</a>
+            <a class="btn azul" href="https://panales.turnosdefarmacias.info/" target="_blank">PAÑALERA</a>
+            <a class="btn azul" href="https://silfab.turnosdefarmacias.info" target="_blank">SILFAB</a>
+            <a class="btn rosado" href="http://sistemasl.ioma.gba.gov.ar/sistemas/meppes_farmacias/index.php" target="_blank">MEPPES</a>
+            <a class="btn azul" href="https://www.turnosdefarmacias.info/" target="_blank">TURNOS</a>
+            <a class="btn azuloscuro" href="https://app.drogueriafarmasun.com.ar/login" target="_blank">FARMASUN</a>
+            <a class="btn chrome" href="https://mail.google.com/mail/u/1/" target="_blank">LEKARNA MAIL</a>
+            <a class="btn pride" href="https://extranet.osde.com.ar/OSDEExtranet/jsp/multiempresas/osde/HomePublicaJuridicaV2.jsp" target="_blank">OSDE VICENTE</a>
         </div>
     </div>
     <div class="franja">
@@ -253,6 +198,4 @@
         <button id="btnImprimir" class="btn-imprimir" onclick="imprimirTicket()">IMPRIMIR TICKET</button>
     </div>
 </body>
-
 </html>
-
