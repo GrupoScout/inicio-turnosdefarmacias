@@ -12,7 +12,6 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            /* Esto es importante para que la altura de la página se calcule correctamente */
             min-height: 100vh; 
         }
 
@@ -24,8 +23,7 @@
         }
 
         .content {
-            padding: 15px 20px; /* Reducimos el padding vertical del contenido */
-            /* Usamos Flexbox en el contenido para ayudar a centrar y distribuir el espacio */
+            padding: 15px 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -34,36 +32,37 @@
         h1 {
             color: #f4f4f4;
             border-bottom: 2px solid #555;
-            padding-bottom: 5px; /* Reducimos el padding */
-            margin-bottom: 20px; /* Reducimos el margen */
+            padding-bottom: 5px;
+            margin-bottom: 20px;
             text-align: center; 
-            font-size: 2.5em; /* Reducimos un poco el título */
+            font-size: 2.5em; 
         }
 
-        /* --- ESTILOS CLAVE: 2 BOTONES POR FILA, COMPACTOS --- */
+        /* --- ESTILOS CLAVE: 2 BOTONES POR FILA --- */
         .button-grid {
             display: grid;
+            /* **2 COLUMNAS DE IGUAL ANCHO** */
             grid-template-columns: repeat(2, 1fr); 
-            gap: 15px; /* Reducimos el espacio entre botones */
+            gap: 15px; 
             margin: 0 auto; 
-            max-width: 1000px; /* Ancho máximo para que no se estiren demasiado en monitores gigantes */
-            /* Agregamos un margen superior e inferior para equilibrar */
+            max-width: 1000px; 
             margin-top: 10px; 
             margin-bottom: 20px; 
         }
 
+        /* Estilo aplicado a los enlaces (<a>) para que parezcan botones grandes */
         .btn {
-            padding: 25px 15px; /* REDUCIMOS ESTO para reducir la altura del botón */
+            display: block; /* Hace que el enlace ocupe todo el espacio de la celda */
+            padding: 25px 15px; 
             border: none;
             border-radius: 8px; 
             cursor: pointer;
-            font-size: 1.3em; /* Reducimos un poco la fuente */
+            font-size: 1.3em; /* Fuente grande */
             font-weight: bold;
-            text-decoration: none;
+            text-decoration: none; /* Quitamos el subrayado típico de los enlaces */
             text-align: center;
             box-sizing: border-box; 
             transition: transform 0.1s; 
-            white-space: normal; 
             line-height: 1.2;
         }
         
@@ -72,7 +71,6 @@
         }
         
         /* Definiciones de colores */
-        /* (Mantenemos los colores sin cambios) */
         .celeste { background-color: #00cfff; color: black; }
         .azul { background-color: #007BFF; color: white; }
         .verde { background-color: #4CAF50; color: white; }
@@ -99,9 +97,7 @@
 
         setInterval(actualizarHora, 1000);
 
-        function abrirUnicaVentana(nombre, url) {
-            window.open(url, nombre, 'width=1000,height=700,resizable=yes,scrollbars=yes');
-        }
+        // Se eliminó la función abrirUnicaVentana()
 
         document.addEventListener('DOMContentLoaded', actualizarHora);
     </script>
@@ -114,45 +110,29 @@
     <div class="content">
         <h1>FARMACIA PINTAR</h1>
         <div class="button-grid">
-            <button class="btn naranja"
-                onclick="abrirUnicaVentana('cofasa', 'https://docs.google.com/forms/d/e/1FAIpQLSdUhc3wLRfU9C6QzU5G2EuIo4CeXpHN_tO_REw4JvWJ__hsvA/viewform')">RECEPCION COFASA</button>
-            <button class="btn yellow"
-                onclick="abrirUnicaVentana('youtube', 'https://www.youtube.com/')">YouTube</button>
+            <a class="btn naranja" href="https://docs.google.com/forms/d/e/1FAIpQLSdUhc3wLRfU9C6QzU5G2EuIo4CeXpHN_tO_REw4JvWJ__hsvA/viewform" target="_blank">RECEPCION COFASA</a>
+            <a class="btn yellow" href="https://www.youtube.com/" target="_blank">YouTube</a>
             
-            <button class="btn celeste"
-                onclick="abrirUnicaVentana('mercadopago', 'https://www.mercadopago.com.ar/collections')">MERCADO PAGO</button>
-            <button class="btn azul"
-                onclick="abrirUnicaVentana('genericos', 'https://script.google.com/macros/s/AKfycbxLOXkGX-UoZA38KEGFzbjOASybp_YoOxlGYhDZyZWtzNKuuVZZRDPUVzuFewaz9-mCjw/exec')">GENÉRICOS</button>
+            <a class="btn celeste" href="https://www.mercadopago.com.ar/collections" target="_blank">MERCADO PAGO</a>
+            <a class="btn azul" href="https://script.google.com/macros/s/AKfycbxLOXkGX-UoZA38KEGFzbjOASybp_YoOxlGYhDZyZWtzNKuuVZZRDPUVzuFewaz9-mCjw/exec" target="_blank">GENÉRICOS</a>
             
-            <button class="btn verde"
-                onclick="abrirUnicaVentana('colegio', 'https://www.colfarmaonline.org.ar')">COLEGIO</button>
-            <button class="btn verde"
-                onclick="abrirUnicaVentana('pami', 'https://farma.pami.org.ar/solicitud')">PAMI</button>
+            <a class="btn verde" href="https://www.colfarmaonline.org.ar" target="_blank">COLEGIO</a>
+            <a class="btn verde" href="https://farma.pami.org.ar/solicitud" target="_blank">PAMI</a>
             
-            <button class="btn rojo"
-                onclick="abrirUnicaVentana('plataforma', 'http://ctacte.cofasa.com.ar')">PLATAFORMA</button>
-            <button class="btn verdeagua"
-                onclick="abrirUnicaVentana('iosfa_recetas', 'https://www.misvalidaciones.com.ar/')">IOSFA RECETAS</button>
+            <a class="btn rojo" href="http://ctacte.cofasa.com.ar" target="_blank">PLATAFORMA</a>
+            <a class="btn verdeagua" href="https://www.misvalidaciones.com.ar/" target="_blank">IOSFA RECETAS</a>
                 
-            <button class="btn verdeagua"
-                onclick="abrirUnicaVentana('iosfa_afiliado', 'https://validador.iosfa.gob.ar/ValidadorSUA1')">IOSFA CONSULTA DE AFILIADO</button>
-            <button class="btn azul"
-                onclick="abrirUnicaVentana('panales', 'https://panales.turnosdefarmacias.info/')">PAÑALERA</button>
+            <a class="btn verdeagua" href="https://validador.iosfa.gob.ar/ValidadorSUA1" target="_blank">IOSFA CONSULTA DE AFILIADO</a>
+            <a class="btn azul" href="https://panales.turnosdefarmacias.info/" target="_blank">PAÑALERA</a>
             
-            <button class="btn azul"
-                onclick="abrirUnicaVentana('silfab', 'https://silfab.turnosdefarmacias.info')">SILFAB</button>
-            <button class="btn rosado"
-                onclick="abrirUnicaVentana('meppes', 'http://sistemasl.ioma.gba.gov.ar/sistemas/meppes_farmacias/index.php')">MEPPES</button>
+            <a class="btn azul" href="https://silfab.turnosdefarmacias.info" target="_blank">SILFAB</a>
+            <a class="btn rosado" href="http://sistemasl.ioma.gba.gov.ar/sistemas/meppes_farmacias/index.php" target="_blank">MEPPES</a>
             
-            <button class="btn azul"
-                onclick="abrirUnicaVentana('turnos', 'https://www.turnosdefarmacias.info/')">TURNOS</button>
-            <button class="btn azuloscuro"
-                onclick="abrirUnicaVentana('farmasun', 'https://app.drogueriafarmasun.com.ar/login')">FARMASUN</button>
+            <a class="btn azul" href="https://www.turnosdefarmacias.info/" target="_blank">TURNOS</a>
+            <a class="btn azuloscuro" href="https://app.drogueriafarmasun.com.ar/login" target="_blank">FARMASUN</a>
             
-            <button class="btn chrome"
-                onclick="abrirUnicaVentana('gmail', 'https://mail.google.com/mail/u/1/')">LEKARNA MAIL</button>
-            <button class="btn pride"
-                onclick="abrirUnicaVentana('osde', 'https://extranet.osde.com.ar/OSDEExtranet/jsp/multiempresas/osde/HomePublicaJuridicaV2.jsp')">OSDE VICENTE</button>
+            <a class="btn chrome" href="https://mail.google.com/mail/u/1/" target="_blank">LEKARNA MAIL</a>
+            <a class="btn pride" href="https://extranet.osde.com.ar/OSDEExtranet/jsp/multiempresas/osde/HomePublicaJuridicaV2.jsp" target="_blank">OSDE VICENTE</a>
         </div>
     </div>
 </body>
