@@ -12,6 +12,8 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
+            /* Esto es importante para que la altura de la página se calcule correctamente */
+            min-height: 100vh; 
         }
 
         .barra-superior {
@@ -22,40 +24,46 @@
         }
 
         .content {
-            padding: 20px;
+            padding: 15px 20px; /* Reducimos el padding vertical del contenido */
+            /* Usamos Flexbox en el contenido para ayudar a centrar y distribuir el espacio */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         h1 {
             color: #f4f4f4;
             border-bottom: 2px solid #555;
-            padding-bottom: 10px;
-            margin-bottom: 30px; 
+            padding-bottom: 5px; /* Reducimos el padding */
+            margin-bottom: 20px; /* Reducimos el margen */
             text-align: center; 
-            font-size: 3em; 
+            font-size: 2.5em; /* Reducimos un poco el título */
         }
 
-        /* --- ESTILOS CLAVE: 2 BOTONES POR FILA --- */
+        /* --- ESTILOS CLAVE: 2 BOTONES POR FILA, COMPACTOS --- */
         .button-grid {
             display: grid;
-            /* **SOLO 2 COLUMNAS DE IGUAL ANCHO** */
             grid-template-columns: repeat(2, 1fr); 
-            gap: 25px; /* Espacio grande entre botones */
-            margin: 0 auto 50px auto; /* Centra la cuadrícula */
-            max-width: 1200px; /* Limita el ancho máximo del contenedor */
+            gap: 15px; /* Reducimos el espacio entre botones */
+            margin: 0 auto; 
+            max-width: 1000px; /* Ancho máximo para que no se estiren demasiado en monitores gigantes */
+            /* Agregamos un margen superior e inferior para equilibrar */
+            margin-top: 10px; 
+            margin-bottom: 20px; 
         }
 
         .btn {
-            padding: 40px 20px; /* ¡AÚN MÁS GRANDE! */
+            padding: 25px 15px; /* REDUCIMOS ESTO para reducir la altura del botón */
             border: none;
             border-radius: 8px; 
             cursor: pointer;
-            font-size: 1.5em; /* Fuente más grande */
+            font-size: 1.3em; /* Reducimos un poco la fuente */
             font-weight: bold;
             text-decoration: none;
             text-align: center;
             box-sizing: border-box; 
             transition: transform 0.1s; 
-            white-space: normal; /* Permite que el texto se ajuste en varias líneas */
+            white-space: normal; 
             line-height: 1.2;
         }
         
@@ -63,12 +71,8 @@
             transform: scale(1.02); 
         }
         
-        /* Estilo para que el botón OSDE VICENTE (el último) ocupe ambas columnas */
-        .btn-full-width {
-             grid-column: span 2;
-        }
-
         /* Definiciones de colores */
+        /* (Mantenemos los colores sin cambios) */
         .celeste { background-color: #00cfff; color: black; }
         .azul { background-color: #007BFF; color: white; }
         .verde { background-color: #4CAF50; color: white; }
@@ -96,7 +100,6 @@
         setInterval(actualizarHora, 1000);
 
         function abrirUnicaVentana(nombre, url) {
-            // Se mantiene la funcionalidad de abrir una única ventana por aplicación
             window.open(url, nombre, 'width=1000,height=700,resizable=yes,scrollbars=yes');
         }
 
