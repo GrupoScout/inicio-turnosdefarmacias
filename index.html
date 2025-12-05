@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Farmacia Pintar</title>
     <style>
-        /* Estilos CSS simplificados e incorporados */
         body {
             background-color: #121212;
             color: white;
@@ -33,24 +32,31 @@
             margin-bottom: 20px;
         }
 
+        /* --- Estilos de Cuadrícula Compacta --- */
         .button-grid {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px; /* Espacio entre los botones */
+            display: grid;
+            grid-template-columns: repeat(8, 1fr); /* 8 columnas de igual ancho */
+            gap: 8px; 
             margin-bottom: 30px;
         }
 
         .btn {
-            padding: 15px 20px;
+            padding: 15px 5px; 
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            font-size: 1em;
+            font-size: 0.8em; 
             font-weight: bold;
-            text-decoration: none; /* Importante para que los <a> parezcan botones */
+            text-decoration: none;
             text-align: center;
-            flex-grow: 1; /* Permite que los botones se estiren un poco si es necesario */
-            min-width: 150px; /* Asegura un ancho mínimo para cada botón */
+        }
+        
+        /* Estilos para botones más anchos que ocupan varias columnas */
+        .btn-ancho {
+            grid-column: span 2; 
+        }
+        .btn-super-ancho {
+            grid-column: span 3; 
         }
 
         /* Definiciones de colores */
@@ -63,17 +69,37 @@
         .azuloscuro { background-color: #102c54; color: white; }
         .naranja { background-color: #FFA500; color: black; }
         .chrome { background-color: #DB4437; color: white; }
-        .yellow { background-color: #FFEB3B; color: black; } /* Agregado para YouTube */
+        .yellow { background-color: #FFEB3B; color: black; }
         .pride {
             background: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet);
             color: black;
         }
 
+        /* --- Estilos de la Sección QR --- */
         .franja {
             background-color: #222;
             padding: 20px;
             margin-top: 20px;
             border-top: 1px solid #444;
+        }
+        
+        .franja label {
+            font-size: 1.1em;
+            font-weight: bold;
+            display: block; /* Ocupa su propia línea */
+            margin-bottom: 5px;
+        }
+
+        .input-precio {
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #555;
+            border-radius: 4px;
+            background-color: #333;
+            color: white;
+            font-size: 1.1em;
+            width: 250px;
+            box-sizing: border-box; 
         }
 
         .btn-imprimir {
@@ -84,17 +110,8 @@
             border-radius: 5px;
             cursor: pointer;
             font-size: 1.1em;
-            margin-top: 10px;
+            font-weight: bold;
         }
-
-        /* Estilo para las coordenadas (No visible, solo para el debugging original) */
-        /*
-        .coordenada {
-            position: absolute;
-            color: red;
-            font-size: 10px;
-        }
-        */
     </style>
     <script>
         function actualizarHora() {
@@ -112,13 +129,21 @@
         }
 
         function validarNumero(input) {
+            // Permite solo números y la coma (,)
             const valor = input.value.replace(/[^0-9,]/g, '');
             input.value = valor;
         }
 
         function imprimirTicket() {
-            alert('Función de imprimir ticket ejecutada. Aquí se realizaría la lógica de impresión.');
-            // Implementar aquí la lógica para generar e imprimir el ticket con QR
+            const precio = document.getElementById('precioTicket').value;
+
+            if (precio && precio !== '0' && precio.replace(',', '.') > 0) {
+                alert(`Generando ticket QR por: $${precio}`);
+                // Aquí iría la lógica real para generar el QR con el precio.
+                // window.open('generar_qr.html?monto=' + encodeURIComponent(precio), '_blank');
+            } else {
+                alert('Por favor, ingrese un precio válido (mayor a 0) antes de imprimir.');
+            }
         }
 
         document.addEventListener('DOMContentLoaded', actualizarHora);
@@ -148,7 +173,8 @@
                 onclick="abrirUnicaVentana('plataforma', 'http://ctacte.cofasa.com.ar')">PLATAFORMA</button>
             <button class="btn verdeagua"
                 onclick="abrirUnicaVentana('iosfa_recetas', 'https://www.misvalidaciones.com.ar/')">IOSFA RECETAS</button>
-            <button class="btn verdeagua"
+            
+            <button class="btn verdeagua btn-ancho"
                 onclick="abrirUnicaVentana('iosfa_afiliado', 'https://validador.iosfa.gob.ar/ValidadorSUA1')">IOSFA CONSULTA DE AFILIADO</button>
             <button class="btn azul"
                 onclick="abrirUnicaVentana('panales', 'https://panales.turnosdefarmacias.info/')">PAÑALERA</button>
@@ -160,14 +186,24 @@
                 onclick="abrirUnicaVentana('turnos', 'https://www.turnosdefarmacias.info/')">TURNOS</button>
             <button class="btn azuloscuro"
                 onclick="abrirUnicaVentana('farmasun', 'https://app.drogueriafarmasun.com.ar/login')">FARMASUN</button>
-            <button class="btn chrome"
+                
+            <button class="btn chrome btn-super-ancho"
                 onclick="abrirUnicaVentana('gmail', 'https://mail.google.com/mail/u/1/')">LEKARNA MAIL</button>
-            <button class="btn pride"
+            <button class="btn pride btn-ancho"
                 onclick="abrirUnicaVentana('osde', 'https://extranet.osde.com.ar/OSDEExtranet/jsp/multiempresas/osde/HomePublicaJuridicaV2.jsp')">OSDE VICENTE</button>
         </div>
     </div>
+    
     <div class="franja">
         <h2>REALIZAR TICKET PARA COBROS CON QR</h2>
+        <label for="precioTicket">Precio a Cobrar: $</label>
+        <input 
+            type="text" 
+            id="precioTicket" 
+            class="input-precio" 
+            oninput="validarNumero(this)" 
+            placeholder="Ingrese el monto"
+        >
         <button id="btnImprimir" class="btn-imprimir" onclick="imprimirTicket()">IMPRIMIR TICKET</button>
     </div>
 </body>
