@@ -29,38 +29,43 @@
             color: #f4f4f4;
             border-bottom: 2px solid #555;
             padding-bottom: 10px;
-            margin-bottom: 20px;
-            text-align: center; /* Título Centrado */
-            font-size: 2.5em; /* Hacemos el título más grande */
+            margin-bottom: 30px; /* Más espacio debajo del título */
+            text-align: center; 
+            font-size: 3em; /* Título muy grande */
         }
 
-        /* --- ESTILOS DE BOTONES GRANDES Y UNIFORMES --- */
+        /* --- ESTILOS DE BOTONES MÁXIMAMENTE GRANDES Y UNIFORMES --- */
         .button-grid {
             display: flex;
             flex-wrap: wrap; 
-            gap: 15px; /* Aumentamos el espacio entre botones */
-            margin-bottom: 30px;
-            justify-content: center; /* Centra las filas de botones */
+            gap: 20px; /* Aumentamos el espacio entre botones */
+            margin-bottom: 50px;
+            justify-content: center; 
         }
 
         .btn {
-            /* Calcula el ancho para que quepan exactamente 6 botones por fila */
-            width: calc((100% - (15px * 5)) / 6); 
-            padding: 25px 15px; /* Más padding para hacerlos más grandes */
+            /* Calcula el ancho para que quepan exactamente 6 botones por fila, con el nuevo gap de 20px */
+            width: calc((100% - (20px * 5)) / 6); 
+            padding: 35px 20px; /* ¡MUCHO MÁS GRANDE! */
             border: none;
-            border-radius: 5px;
+            border-radius: 8px; /* Bordes un poco más redondeados */
             cursor: pointer;
-            font-size: 1.1em; /* Fuente más grande */
+            font-size: 1.3em; /* Fuente más grande */
             font-weight: bold;
             text-decoration: none;
             text-align: center;
-            box-sizing: border-box; /* Crucial para mantener el tamaño uniforme */
+            box-sizing: border-box; 
+            transition: transform 0.1s; /* Animación al pasar el mouse */
+        }
+        
+        .btn:hover {
+            transform: scale(1.02); /* Efecto de crecimiento al pasar el mouse */
         }
 
         /* Estilos específicos de botones anchos para textos largos */
         .btn-ancho {
             /* Ocupa el espacio de 2 botones */
-            width: calc(((100% - (15px * 5)) / 6) * 2 + 15px); 
+            width: calc(((100% - (20px * 5)) / 6) * 2 + 20px); 
         }
         
         /* Definiciones de colores */
