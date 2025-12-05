@@ -30,35 +30,32 @@
             border-bottom: 2px solid #555;
             padding-bottom: 10px;
             margin-bottom: 20px;
+            text-align: center; /* Título Centrado */
         }
 
-        /* --- ESTILOS DE CUADRÍCULA COMPACTA Y GRANDE --- */
+        /* --- ESTILOS DE BOTONES GRANDES Y UNIFORMES --- */
         .button-grid {
-            display: grid;
-            /* 6 columnas de ancho igual para botones grandes */
-            grid-template-columns: repeat(6, 1fr); 
+            display: flex;
+            flex-wrap: wrap; /* Permite que los botones pasen a la siguiente fila */
             gap: 12px; /* Espacio entre botones */
             margin-bottom: 30px;
+            justify-content: center; /* Centra las filas de botones horizontalmente */
         }
 
         .btn {
-            padding: 20px 10px; /* Más padding para botones grandes */
+            /* Calcula el ancho para que quepan exactamente 6 botones por fila, 
+               teniendo en cuenta el espacio (gap) */
+            width: calc((100% - (12px * 5)) / 6); 
+            padding: 20px 10px; 
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            font-size: 1em; /* Fuente legible */
+            font-size: 1em; 
             font-weight: bold;
             text-decoration: none;
             text-align: center;
-        }
-        
-        /* Ocupa 2 de 6 columnas */
-        .btn-ancho {
-            grid-column: span 2; 
-        }
-        /* Ocupa 3 de 6 columnas */
-        .btn-super-ancho {
-            grid-column: span 3; 
+            /* Aseguramos que todos sean del mismo tamaño y se alineen */
+            box-sizing: border-box; 
         }
 
         /* Definiciones de colores */
@@ -75,63 +72,11 @@
         .pride {
             background: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet);
             color: black;
-            grid-column: span 3; /* Aseguramos que OSDE VICENTE ocupe 3 columnas */
-        }
-
-        /* --- Estilos de la Sección QR --- */
-        .franja {
-            background-color: #222;
-            padding: 20px;
-            margin-top: 20px;
-            border-top: 1px solid #444;
         }
         
-        .franja label {
-            font-size: 1.1em;
-            font-weight: bold;
-            display: block; 
-            margin-bottom: 5px;
-        }
-
-        .input-precio {
-            padding: 8px;
-            margin-bottom: 15px;
-            border: 1px solid #555;
-            border-radius: 4px;
-            background-color: #333;
-            color: white;
-            font-size: 1.1em;
-            width: 250px;
-            box-sizing: border-box; 
-        }
-
-        .btn-imprimir {
-            background-color: #00bcd4;
-            color: black;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1.1em;
-            font-weight: bold;
-        }
-
-        /* Opcional: Oculta la barra de navegación para la impresión si solo quieres imprimir el ticket */
-        /* Puedes ajustar esta regla si el 'ticket' es el contenido de la página */
-        @media print {
-            .barra-superior, .button-grid, h1 {
-                display: none;
-            }
-            .content, .franja {
-                padding: 0;
-                margin: 0;
-                /* Asegúrate de que solo se vea lo que quieres imprimir */
-            }
-            .franja {
-                background-color: white;
-                color: black;
-                border: none;
-            }
+        /* Estilos específicos de botones (solo si el texto es muy largo y necesita más espacio) */
+        .btn-ancho {
+            width: calc((100% - (12px * 2)) / 3); /* Ocupa el espacio de 2 botones */
         }
     </style>
     <script>
@@ -149,23 +94,7 @@
             window.open(url, nombre, 'width=1000,height=700,resizable=yes,scrollbars=yes');
         }
 
-        function validarNumero(input) {
-            // Permite solo números y la coma (,)
-            const valor = input.value.replace(/[^0-9,]/g, '');
-            input.value = valor;
-        }
-
-        function imprimirTicket() {
-            const precio = document.getElementById('precioTicket').value;
-
-            if (precio && precio !== '0' && precio.replace(',', '.') > 0) {
-                alert(`Generando y preparando ticket para impresión por: $${precio}`);
-                // Esta función abre el diálogo de impresión del navegador
-                window.print(); 
-            } else {
-                alert('Por favor, ingrese un precio válido (mayor a 0) antes de imprimir.');
-            }
-        }
+        // Se eliminó la función validarNumero y la función imprimirTicket ya que se quitó la funcionalidad QR.
 
         document.addEventListener('DOMContentLoaded', actualizarHora);
     </script>
@@ -195,37 +124,25 @@
                 onclick="abrirUnicaVentana('plataforma', 'http://ctacte.cofasa.com.ar')">PLATAFORMA</button>
             <button class="btn verdeagua"
                 onclick="abrirUnicaVentana('iosfa_recetas', 'https://www.misvalidaciones.com.ar/')">IOSFA RECETAS</button>
-            <button class="btn verdeagua btn-ancho"
+            <button class="btn verdeagua"
                 onclick="abrirUnicaVentana('iosfa_afiliado', 'https://validador.iosfa.gob.ar/ValidadorSUA1')">IOSFA CONSULTA DE AFILIADO</button>
             <button class="btn azul"
                 onclick="abrirUnicaVentana('panales', 'https://panales.turnosdefarmacias.info/')">PAÑALERA</button>
             <button class="btn azul"
                 onclick="abrirUnicaVentana('silfab', 'https://silfab.turnosdefarmacias.info')">SILFAB</button>
-            
             <button class="btn rosado"
                 onclick="abrirUnicaVentana('meppes', 'http://sistemasl.ioma.gba.gov.ar/sistemas/meppes_farmacias/index.php')">MEPPES</button>
+            
             <button class="btn azul"
                 onclick="abrirUnicaVentana('turnos', 'https://www.turnosdefarmacias.info/')">TURNOS</button>
             <button class="btn azuloscuro"
                 onclick="abrirUnicaVentana('farmasun', 'https://app.drogueriafarmasun.com.ar/login')">FARMASUN</button>
-            <button class="btn chrome btn-super-ancho"
+            <button class="btn chrome"
                 onclick="abrirUnicaVentana('gmail', 'https://mail.google.com/mail/u/1/')">LEKARNA MAIL</button>
             <button class="btn pride"
                 onclick="abrirUnicaVentana('osde', 'https://extranet.osde.com.ar/OSDEExtranet/jsp/multiempresas/osde/HomePublicaJuridicaV2.jsp')">OSDE VICENTE</button>
-        </div>
-    </div>
-    
-    <div class="franja">
-        <h2>REALIZAR TICKET PARA COBROS CON QR</h2>
-        <label for="precioTicket">Precio a Cobrar: $</label>
-        <input 
-            type="text" 
-            id="precioTicket" 
-            class="input-precio" 
-            oninput="validarNumero(this)" 
-            placeholder="Ingrese el monto"
-        >
-        <button id="btnImprimir" class="btn-imprimir" onclick="imprimirTicket()">IMPRIMIR TICKET</button>
+            
+            </div>
     </div>
 </body>
 
